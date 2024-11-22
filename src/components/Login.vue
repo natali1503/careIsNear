@@ -17,7 +17,7 @@ function onHandleAuthorization() {
   <div class="card">
     <input type="text" placeholder="Логин" v-model="login" />
     <input type="text" placeholder="Пароль" v-model="password" />
-    <button type="button" @click="temp">Войти</button>
+    <button type="button" @click="onHandleAuthorization">Войти</button>
     <!-- <button type="button" @click="authSore.logout">Выйти</button> -->
   </div>
 </template>
