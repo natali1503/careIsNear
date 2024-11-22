@@ -1,3 +1,3 @@
-export function addLocalStorage(key: string): void {
+export function deleteLocalStorage(key: string): void {
   localStorage.removeItem(key);
 }
