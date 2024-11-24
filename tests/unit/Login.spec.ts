@@ -50,4 +50,39 @@ describe("Login", () => {
     });
     expect(localStorage.getItem("tokenAuth")).toBe("wegwegwe");
   });
+  it("Должен сохранять токен в localStorage при авторизации", async () => {
+    //given
+    api.auth = jest.fn().mockResolvedValueOnce("wegwegwe");
+    const wrapper = mount(Login);
+    const loginInput = wrapper.find("input[placeholder='Логин']");
+    const passwordInput = wrapper.find("input[placeholder='Пароль']");
+
+    //when
+    await loginInput.setValue("testLogin");
+    await passwordInput.setValue("testPassword");
+    await wrapper.find("button").trigger("click");
+
+    //then
+    expect(api.auth).toHaveBeenCalledTimes(1);
+    expect(api.auth).toHaveBeenCalledWith({
+      login: "testLogin",
+      password: "testPassword",
+    });
+    expect(localStorage.getItem("tokenAuth")).toBe("wegwegwe");
+  });
+  it("Обратка ошибки", async () => {
+    //given
+    api.auth = jest.fn().mockRejectedValueOnce(new Error());
+    const wrapper = mount(Login);
+    const loginInput = wrapper.find("input[placeholder='Логин']");
+    const passwordInput = wrapper.find("input[placeholder='Пароль']");
+    //when
+    await loginInput.setValue("testLogin");
+    await passwordInput.setValue("testPassword");
+    await wrapper.find("button").trigger("click");
+    //then
+    expect(api.auth).toHaveBeenCalledTimes(1);
+    const errorDiv = wrapper.find(".error");
+    expect(errorDiv.exists()).toBe(true);
+  });
 });
