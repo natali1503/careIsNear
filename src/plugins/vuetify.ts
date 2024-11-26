@@ -20,8 +20,17 @@ const vuetify = createVuetify({
     defaultTheme: "customTheme",
     themes: {
       customTheme,
+      // variables: {
+      //   "font-size-root": "16px",
+      //   "font-size-h1": "24px",
+      //   "font-size-h2": "20px",
+      //   "font-size-h3": "18px",
+      //   "font-size-body-1": "16px",
+      //   "font-size-body-2": "14px",
+      // },
     },
   },
+
   icons: {
     defaultSet: "mdi",
 
