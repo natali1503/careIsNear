@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import Login from "./components/Login.vue";
-import Wrapper from "./components/Wrapper.vue";
+import Login from './components/Login.vue';
+import Wrapper from './components/Wrapper.vue';
 </script>
 
 <template>
   <Wrapper>
-    <Login />
+    <!-- <Login /> -->
+    <RouterView />
   </Wrapper>
 </template>
 
