@@ -4,10 +4,11 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from './store/auth';
 import { routesName } from './router';
 import { watch } from 'vue';
+import { getLocalStorage } from '@/general/localStorage/getLocalStorage';
 
 const authStore = useAuthStore();
 const router = useRouter();
-
+authStore.restoreState();
 watch(
   () => authStore.isAuth,
   (newValue, oldValue) => {
