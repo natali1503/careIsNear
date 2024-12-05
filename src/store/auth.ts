@@ -21,6 +21,7 @@ export const useAuthStore = defineStore('auth', {
           addLocalStorage('tokenAuth', token);
           this.isAuth = true;
           this.isError = false;
+          addLocalStorage('isAuth', String(this.isAuth));
         }
       } catch (e) {
         this.isAuth = false;
@@ -32,10 +33,18 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       deleteLocalStorage('tokenAuth');
       this.isAuth = false;
+      deleteLocalStorage('isAuth');
     },
+
     setIsAuth() {
       if (getLocalStorage('tokenAuth')) this.isAuth = true;
       else this.isAuth = false;
+    },
+    restoreState() {
+      const storedState = localStorage.getItem('isAuth');
+      if (storedState) {
+        this.isAuth = JSON.parse(storedState);
+      }
     },
   },
 });
