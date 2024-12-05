@@ -25,9 +25,6 @@ function handleClickDataAuth(dataAuth: { login: string; password: string }) {
   login.value = dataAuth.login;
   password.value = dataAuth.password;
 }
-function temp(e) {
-  console.log(768);
-}
 </script>
 
 <template>
