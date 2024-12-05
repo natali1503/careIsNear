@@ -1,4 +1,6 @@
-import { client, postApiAuth } from "./generated/services.gen";
+import { Options } from '@hey-api/client-fetch';
+import { client, getApiRequest, postApiAuth } from './generated/services.gen';
+import { GetApiRequestResponse } from './generated/types.gen';
 
 class Api {
   private readonly url: string;
@@ -26,9 +28,9 @@ class Api {
       return response.data?.token;
     } catch (code) {
       console.log(code);
-      if (code === 500) console.log("Сервер");
-      else if (code === 400) console.log("Неверный логин/пароль");
-      else console.log("Что-то еще");
+      if (code === 500) console.log('Сервер');
+      else if (code === 400) console.log('Неверный логин/пароль');
+      else console.log('Что-то еще');
       throw Error;
     }
   }
@@ -38,8 +40,20 @@ class Api {
   removeFromFavourites() {}
   contributeToRequest() {}
   getRequestDetails() {}
-  getRequests() {}
+  async getRequests(token: string) {
+    try {
+      const response = await getApiRequest({
+        headers: { Authorization: `Bearer ${token}` },
+      } as Options<{ headers: Record<string, string> }>);
+      const data = response.data as GetApiRequestResponse;
+      return data;
+    } catch (code) {
+      console.log(code);
+      if (code === 500) console.log('Сервер');
+      throw Error;
+    }
+  }
   errorHandling() {}
 }
-export const api = new Api("http://localhost:4040");
+export const api = new Api('http://localhost:4040');
 api.init();
