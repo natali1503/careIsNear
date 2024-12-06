@@ -1,12 +1,12 @@
-import { mount, config } from '@vue/test-utils';
+import { createRouter, createWebHistory } from 'vue-router';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import Login from '../../src/Pages/Login.vue';
-import { api } from '../../src/api/api';
+import { mount, config } from '@vue/test-utils';
 import { createVuetify } from 'vuetify';
 import 'vuetify/styles';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createRouter, createWebHistory } from 'vue-router';
-import { useAuthStore } from '../../src/store/auth';
+import Login from '../../src/Pages/Login.vue';
+import { api } from '../../src/api/api';
+
 describe('Login', () => {
   const vuetify = createVuetify();
   config.global.plugins = [vuetify];
