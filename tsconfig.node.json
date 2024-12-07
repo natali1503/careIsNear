@@ -6,6 +6,10 @@
     "lib": ["ES2023"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "vuetify/*": ["node_modules/vuetify/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "Bundler",

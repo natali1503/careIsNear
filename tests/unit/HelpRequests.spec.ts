@@ -1,8 +1,9 @@
-import { createPinia, setActivePinia } from 'pinia';
-import { api } from '../../src/api/api';
 import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { api } from '../../src/api/api';
 import HelpRequests from '../../src/Pages/HelpRequests.vue';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('HelpRequests', () => {
   beforeEach(async () => {
@@ -11,7 +12,7 @@ describe('HelpRequests', () => {
     vi.clearAllMocks();
     localStorage.setItem(
       'tokenAuth',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZDE4ZjIzLWMzZjItNDQ2MC05YTc3LTliOTViZjZiMWEzMCIsImlhdCI6MTczMjcyMTc5NSwiZXhwIjoxNzMyNzI1Mzk1fQ.Zk-7KtvAWISddtb4GxaDe8PSAqKO6zgYwavN-FhGo3Q'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZDE4ZjIzLWMzZjItNDQ2MC05YTc3LTliOTViZjZiMWEzMCIsImlhdCI6MTczMjcyMTc5NSwiZXhwIjoxNzMyNzI1Mzk1fQ.Zk-7KtvAWISddtb4GxaDe8PSAqKO6zgYwavN-FhGo3Q',
     );
   });
   afterEach(() => {});

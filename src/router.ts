@@ -1,9 +1,9 @@
-import { createWebHistory, createRouter } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
-import Login from './Pages/Login.vue';
 import HelpRequests from './Pages/HelpRequests.vue';
-import Profile from './Pages/Profile.vue';
+import Login from './Pages/Login.vue';
 import PageNotFound from './Pages/PageNotFound.vue';
+import Profile from './Pages/Profile.vue';
 
 export const routesName = {
   login: 'login',

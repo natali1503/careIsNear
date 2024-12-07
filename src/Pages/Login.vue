@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '../store/auth';
-import { ref, watch } from 'vue';
+import { ref, watch, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { routesName } from '../router';
 import LoginForm from '../components/Login/LoginForm.vue';
@@ -11,7 +11,7 @@ const login = ref('');
 const password = ref('');
 
 const router = useRouter();
-
+onBeforeMount(() => {});
 watch(
   () => authStore.isAuth,
   (isAuth, oldValue) => {

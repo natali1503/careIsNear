@@ -1,4 +1,7 @@
 {
   "singleQuote": true,
-  "printWidth": 120
+  "printWidth": 120,
+  "plugins": ["prettier-plugin-organize-imports"],
+  "organizeImportsSkipDestructiveCodeActions": true,
+  "files": ["**/*.{js,jsx,ts,tsx,mjs,cjs, vue}"]
 }

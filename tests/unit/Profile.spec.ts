@@ -1,9 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createPinia, setActivePinia } from 'pinia';
 import { config, mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createVuetify } from 'vuetify';
-import Profile from '../../src/Pages/Profile.vue';
+
 import { api } from '../../src/api/api';
+import Profile from '../../src/Pages/Profile.vue';
 
 describe('Profile', () => {
   const vuetify = createVuetify();

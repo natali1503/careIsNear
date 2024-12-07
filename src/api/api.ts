@@ -1,4 +1,5 @@
 import { Options } from '@hey-api/client-fetch';
+
 import { client, getApiRequest, postApiAuth } from './generated/services.gen';
 import { GetApiRequestResponse } from './generated/types.gen';
 

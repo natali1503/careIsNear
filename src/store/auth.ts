@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+
 import { api } from '../api/api';
 import { addLocalStorage } from '../general/localStorage/addLocalStorage';
 import { deleteLocalStorage } from '../general/localStorage/deleteLocalStorage';

@@ -1,7 +1,7 @@
-import { defineConfig } from 'vitest/config';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
