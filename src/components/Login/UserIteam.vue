@@ -11,13 +11,13 @@ const props = defineProps<{ dataAuth: IDataAuthUser }>();
       </v-col>
       <v-col cols="10" style="padding: 0px">
         <v-row style="margin: 0; margin-bottom: 4px">
-          <p>{{ props.dataAuth.title }}</p>
+          <p>{{ dataAuth.title }}</p>
         </v-row>
         <v-row style="margin: 0">
-          <p>Логин: {{ props.dataAuth.login }}</p>
+          <p>Логин: {{ dataAuth.login }}</p>
         </v-row>
         <v-row style="margin: 0">
-          <p>Пароль: {{ props.dataAuth.password }}</p>
+          <p>Пароль: {{ dataAuth.password }}</p>
         </v-row>
       </v-col>
     </v-row>
@@ -32,7 +32,8 @@ const props = defineProps<{ dataAuth: IDataAuthUser }>();
 }
 .userIteam:hover {
   background-color: rgba(245, 245, 245, 0.4);
-  box-shadow: 0px 2px 4px -1px var(--v-shadow-key-umbra-opacity, rgba(0, 0, 0, 0.2)),
+  box-shadow:
+    0px 2px 4px -1px var(--v-shadow-key-umbra-opacity, rgba(0, 0, 0, 0.2)),
     0px 4px 5px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.14)),
     0px 1px 10px 0px var(--v-shadow-key-ambient-opacity, rgba(0, 0, 0, 0.12));
 }

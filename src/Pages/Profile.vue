@@ -1,11 +1,26 @@
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
+import { computed, onBeforeMount } from 'vue';
+import PageTemplate from '../components/PageTemplate.vue';
+import CardProfile from '../components/Profile/CardProfile.vue';
+import ProfileInfo from '../components/Profile/ProfileInfo.vue';
 import { useProfileInfo } from '../store/profileInfo';
-const profileInfoStore = useProfileInfo();
 
+const profileInfoStore = useProfileInfo();
 onBeforeMount(() => {
   profileInfoStore.getProfileInfo();
 });
+const isLoading = computed(() => profileInfoStore.isLoading);
+const isError = computed(() => profileInfoStore.isError);
+const isData = computed(() => profileInfoStore.isData);
+const data = computed(() => profileInfoStore.data);
 </script>
-<template>profile</template>
+<template>
+  <v-container style="width: 100%; padding: 0; height: 100%">
+    <PageTemplate title="Мой профиль">
+      <CardProfile v-if="isData" :name="data.name" :lastname="data.lastName" :status="data.status" />
+      <v-col style="width: 20px"></v-col>
+      <ProfileInfo v-if="isData" :dataUser="data" />
+    </PageTemplate>
+  </v-container>
+</template>
 <style scoped></style>
