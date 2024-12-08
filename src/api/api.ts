@@ -1,7 +1,7 @@
 import { Options } from '@hey-api/client-fetch';
 
-import { client, getApiRequest, postApiAuth } from './generated/services.gen';
-import { GetApiRequestResponse } from './generated/types.gen';
+import { client, getApiRequest, getApiUser, postApiAuth } from './generated/services.gen';
+import { GetApiRequestResponse, GetApiUserResponse } from './generated/types.gen';
 
 class Api {
   private readonly url: string;
@@ -37,7 +37,19 @@ class Api {
   }
   getUserFavourites() {}
   addToFavourites() {}
-  getUserInfo() {}
+  async getUserInfo(token: string) {
+    try {
+      const response = await getApiUser({
+        headers: { Authorization: `Bearer ${token}` },
+      } as Options<{ headers: Record<string, string> }>);
+      const data = response.data as GetApiUserResponse;
+      return data;
+    } catch (code) {
+      console.log(code);
+      if (code === 500) console.log('Сервер');
+      throw Error;
+    }
+  }
   removeFromFavourites() {}
   contributeToRequest() {}
   getRequestDetails() {}
