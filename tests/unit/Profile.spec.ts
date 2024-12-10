@@ -16,13 +16,17 @@ describe('Profile', () => {
     vi.clearAllMocks();
     localStorage.clear();
   });
-  it('Запрос данных о пользователе', () => {
-    api.getUserInfo = vi.fn();
+  it('Запрос данных о пользователе', async () => {
+    localStorage.setItem('tokenAuth', 'wegwegwe');
+    const token = localStorage.getItem('tokenAuth');
+    const getUserInfoMock = vi.fn().mockResolvedValueOnce(token);
+    api.getUserInfo = getUserInfoMock;
+
     const wrapper = mount(Profile, {
       global: {
         plugins: [vuetify],
       },
     });
-    expect(api.getUserInfo).toHaveBeenCalledTimes(1);
+    expect(getUserInfoMock).toHaveBeenCalledTimes(1);
   });
 });
