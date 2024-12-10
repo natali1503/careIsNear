@@ -5,7 +5,7 @@ const props = defineProps<{
   organizationName?: string;
   level?: 'Среднее общее' | 'Среднее профессиональное' | 'Высшее';
   specialization?: string;
-  graduationYear?: number;
+  graduationYear?: string;
 }>();
 </script>
 <template>

@@ -11,8 +11,8 @@ onBeforeMount(() => {
 });
 const isLoading = computed(() => profileInfoStore.isLoading);
 const isError = computed(() => profileInfoStore.isError);
-const isData = computed(() => profileInfoStore.isData);
-const data = computed(() => profileInfoStore.data);
+const isData = computed(() => profileInfoStore.isData || false);
+const data = computed(() => profileInfoStore.data || {});
 </script>
 <template>
   <v-container style="width: 100%; padding: 0; height: 100%">

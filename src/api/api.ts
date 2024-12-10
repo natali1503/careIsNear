@@ -46,8 +46,9 @@ class Api {
       return data;
     } catch (code) {
       console.log(code);
+
       if (code === 500) console.log('Сервер');
-      throw Error;
+      throw code;
     }
   }
   removeFromFavourites() {}

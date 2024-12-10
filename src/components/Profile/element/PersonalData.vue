@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { GetApiUserResponse } from '../../../api/generated';
+import { dateFormatting } from '../../../general/dateFormatting';
 import EducationIteam from './EducationIteam.vue';
 import LocationForHelpIteam from './LocationForHelpIteam.vue';
 import Row from './Row.vue';
@@ -16,7 +17,7 @@ const props = defineProps<{
       <Row title="Имя" :description="data.name" />
     </Section>
     <Section sectionTitle="Дата рождения">
-      <Row :description="`data.baseLocations`" />
+      <Row :description="`${dateFormatting(data.birthdate)}`" />
     </Section>
     <Section sectionTitle="Локация для помощи">
       <div class="listIteams">
@@ -36,7 +37,7 @@ const props = defineProps<{
           :organizationName="education.organizationName"
           :level="education.level"
           :specialization="education.specialization"
-          :graduationYear="education.graduationYear"
+          :graduationYear="dateFormatting(education.graduationYear)"
         />
       </div>
     </Section>

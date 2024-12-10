@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { api } from '../api/api';
 import { GetApiUserResponse } from '../api/generated';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
+import { useAuthStore } from './auth';
 
 export const useProfileInfo = defineStore('profileInfo', {
   state: () => ({
@@ -20,7 +21,10 @@ export const useProfileInfo = defineStore('profileInfo', {
         this.data = data;
         this.isData = true;
       } catch (e) {
-        console.log(e);
+        if (e === 403) {
+          const authStore = useAuthStore();
+          authStore.logout();
+        }
         this.isData = false;
       } finally {
         this.isLoading = false;
