@@ -8,7 +8,6 @@ const tab = ref(0);
 const props = defineProps<{
   dataUser: GetApiUserResponse;
 }>();
-console.log(props.dataUser.contacts);
 </script>
 <template>
   <v-col cols="12" md="8" class="profileInfo" style="">

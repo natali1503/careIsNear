@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { DefineComponent } from 'vue';
+import { GetApiUserResponse } from '../../../api/generated';
 import ItemSocial from './ItemSocial.vue';
 import Row from './Row.vue';
 import Section from './Section.vue';
@@ -7,27 +8,18 @@ import Telegram from './Telegram.vue';
 import Vkontakte from './Vkontakte.vue';
 import Whatsapp from './Whatsapp.vue';
 
-const props = defineProps<{
-  contacts: {
-    email: string;
-    phone: string;
-    social: {
-      vk: string;
-      telegram: string;
-      whatsapp: string;
-    };
-  };
-}>();
+type contacts = Pick<GetApiUserResponse, 'contacts'>;
+const props = defineProps<contacts>();
 </script>
 
 <template>
   <div style="display: flex; flex-direction: column; gap: 30px">
     <Section sectionTitle="E-mail">
-      <Row :description="contacts.email" />
+      <Row v-if="contacts?.email" :description="contacts.email" />
     </Section>
 
     <Section sectionTitle="Телефон">
-      <Row :description="contacts.phone" />
+      <Row v-if="contacts?.phone" :description="contacts.phone" />
     </Section>
 
     <Section sectionTitle="Социальные сети">
