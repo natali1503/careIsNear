@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { api } from '../api/api';
 import { GetApiUserResponse } from '../api/generated';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
+
 import { useAuthStore } from './auth';
 
 export const useProfileInfo = defineStore('profileInfo', {

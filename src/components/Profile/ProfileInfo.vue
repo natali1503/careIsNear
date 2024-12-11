@@ -10,8 +10,8 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <v-col cols="12" md="8" class="profileInfo" style="">
-    <v-card style="margin: 0; padding: 0; box-shadow: none">
+  <v-col cols="12" md="9" class="profileInfoPadding">
+    <v-card class="profileInfo">
       <v-tabs v-model="tab" color="#1E88E5">
         <v-tab>Личные данные</v-tab>
         <v-tab>Контакты</v-tab>
@@ -36,10 +36,22 @@ const props = defineProps<{
 </template>
 <style scoped>
 .profileInfo {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  min-height: 75vh;
   background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   padding-top: 10px;
   padding-left: 30px;
+}
+.profileInfoPadding {
+  padding: 0 0 0 20px;
+}
+@media (max-width: 960px) {
+  .profileInfoPadding {
+    padding: 20px 0 0 0;
+  }
 }
 </style>

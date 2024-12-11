@@ -18,7 +18,6 @@ const data = computed(() => profileInfoStore.data || {});
   <v-container style="width: 100%; padding: 0; height: 100%">
     <PageTemplate title="Мой профиль">
       <CardProfile v-if="isData" :name="data.name" :lastname="data.lastName" :status="data.status" />
-      <v-col style="width: 20px"></v-col>
       <ProfileInfo v-if="isData" :dataUser="data" />
     </PageTemplate>
   </v-container>
