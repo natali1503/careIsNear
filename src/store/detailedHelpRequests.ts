@@ -1,25 +1,23 @@
 import { defineStore } from 'pinia';
 
 import { api } from '../api/api';
-import { GetApiRequestResponse } from '../api/generated/types.gen';
+import { HelpRequestData } from '../api/generated';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
 
-export const useHelpRequests = defineStore('helpRequests', {
+export const useDetailedHelpRequests = defineStore('detailedHelpRequests', {
   state: () => ({
+    data: <HelpRequestData>{},
     isLoading: false,
     isError: false,
-    data: <GetApiRequestResponse>[],
     isData: false,
   }),
-  getters: {},
   actions: {
-    async getHelpRequests() {
+    async getRequestDetails(id: string) {
       try {
-        if (this.data.length !== 0) return;
         this.isLoading = true;
         const token = getLocalStorage('tokenAuth');
-        if (token === null) return;
-        const data = await api.getRequests(token);
+        if (!token) return;
+        const data = await api.getRequestDetails(id, token);
         this.data = data;
         this.isData = true;
       } catch (e) {
