@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { dateFormatting } from '../../general/dateFormatting';
-import { sendDonation } from '../../general/sendDonation';
+import { dateFormatting } from '../../../general/dateFormatting';
+import { sendDonation } from '../../../general/sendDonation';
+import DonationStatusCard from './element/DonationStatusCard.vue';
 
 const props = defineProps<{ donationData }>();
 const requestGoalCurrentValueFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' })
@@ -37,33 +38,12 @@ function onHandleClick() {
       </div>
     </v-col>
     <v-col cols="7" md="12" style="margin: 0; padding: 0">
-      <div style="display: flex; flex-direction: column; gap: 40px">
-        <div style="display: flex; flex-direction: column; gap: 4px">
-          <span class="title">Мы собрали</span>
-          <div>
-            <v-progress-linear
-              :model-value="percentageOfAssistance"
-              :height="4"
-              color="primary"
-              style="border-radius: 16px"
-            ></v-progress-linear>
-          </div>
-          <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <div style="color: rgba(0, 0, 0, 0.6)">
-              {{ requestGoalCurrentValueFormat }}
-            </div>
-            <div style="color: rgba(0, 0, 0, 0.6)">{{ requestGoalFormat }}</div>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px">
-          <span style="color: rgba(0, 0, 0, 0.6)">Нас уже: {{ contributorsCountFormat }}</span>
-          <div>
-            <v-btn style="width: 100%" color="primary" @click="onHandleClick">Помочь</v-btn>
-          </div>
-        </div>
-      </div>
-    </v-col></v-row
-  >
+      <DonationStatusCard
+        :requestGoalCurrentValue="props.donationData.requestGoalCurrentValue"
+        :requestGoal="props.donationData.requestGoal"
+        :contributorsCount="props.donationData.contributorsCount"
+      /> </v-col
+  ></v-row>
 </template>
 <style scoped>
 .mainTitle {
