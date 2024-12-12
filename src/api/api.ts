@@ -1,6 +1,13 @@
 import { Options } from '@hey-api/client-fetch';
 
-import { client, getApiRequest, getApiRequestById, getApiUser, postApiAuth } from './generated/services.gen';
+import {
+  client,
+  getApiRequest,
+  getApiRequestById,
+  getApiUser,
+  postApiAuth,
+  postApiRequestByIdContribution,
+} from './generated/services.gen';
 import { GetApiRequestResponse, GetApiUserResponse, HelpRequestData } from './generated/types.gen';
 
 class Api {
@@ -52,7 +59,17 @@ class Api {
     }
   }
   removeFromFavourites() {}
-  contributeToRequest() {}
+  async contributeToRequest(id: string, token: string) {
+    try {
+      const response = await postApiRequestByIdContribution({
+        headers: { Authorization: `Bearer ${token}` },
+        path: { id },
+      });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async getRequestDetails(id: string, token: string) {
     try {
       const response = await getApiRequestById({ headers: { Authorization: `Bearer ${token}` }, path: { id } });

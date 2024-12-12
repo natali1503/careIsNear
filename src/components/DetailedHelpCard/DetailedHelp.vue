@@ -9,7 +9,7 @@ const props = defineProps<{ dataDetailedHelp: HelpRequestData }>();
 </script>
 <template>
   <div class="detailedHelp">
-    <div style="display: flex; flex-direction: row; padding-right: 15px">
+    <div style="display: flex; flex-direction: row; padding-right: 15px; justify-content: space-between">
       <h5 class="title">{{ dataDetailedHelp.title.split(' ').slice(1).join(' ') }}</h5>
       <FavoriteButton :empty="true" type="withText" operation="add" />
     </div>

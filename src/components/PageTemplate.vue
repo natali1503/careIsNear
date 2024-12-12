@@ -17,7 +17,7 @@ const props = defineProps({ title: String });
     <v-row style="margin: 0; padding-bottom: 20px">
       <h4 class="title">{{ title }}</h4>
     </v-row>
-    <v-row style="margin: 0">
+    <v-row style="margin: 0; justify-content: space-between">
       <slot></slot>
     </v-row>
   </v-container>
