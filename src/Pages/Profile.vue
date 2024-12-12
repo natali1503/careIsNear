@@ -15,11 +15,11 @@ const isData = computed(() => profileInfoStore.isData || false);
 const data = computed(() => profileInfoStore.data || {});
 </script>
 <template>
-  <v-container style="width: 100%; padding: 0; height: 100%">
+  <div style="width: 100%; padding: 0; height: 100%">
     <PageTemplate title="Мой профиль">
       <CardProfile v-if="isData" :name="data.name" :lastname="data.lastName" :status="data.status" />
       <ProfileInfo v-if="isData" :dataUser="data" />
     </PageTemplate>
-  </v-container>
+  </div>
 </template>
 <style scoped></style>

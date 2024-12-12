@@ -1,3 +1,5 @@
+import path from 'path';
+
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
@@ -19,7 +21,11 @@ export default defineConfig({
   ],
   resolve: {
     extensions: ['.vue', '.js', '.ts', '.jsx', '.tsx'],
+    alias: {
+      '@': path.resolve(__dirname, './src'), // Указываем путь к вашей папке "src"
+    },
   },
+
   test: {
     globals: true,
     environment: 'jsdom',

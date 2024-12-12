@@ -1,3 +1,3 @@
 <script setup lang="ts"></script>
-<template>GridIteam</template>
+<template>В разработке</template>
 <style scoped></style>

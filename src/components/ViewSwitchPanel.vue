@@ -6,7 +6,6 @@ const emit = defineEmits<{
 }>();
 const selectedСard = ref<ViewModeKey>(1);
 function onHandleSelectedСard(newSelectedСard: ViewModeKey) {
-  console.log(selectedСard.value === newSelectedСard);
   emit('updateViewMode', newSelectedСard);
 }
 </script>

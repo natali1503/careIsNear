@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { HelpRequestData } from '../api/generated';
-import DetailedHelp from '../components/DetailedHelpCard/DetailedHelp.vue';
-import DonationCard from '../components/DetailedHelpCard/DonationCard.vue';
+import DetailedHelp from '../components/HelpCard/DetailedHelpCard/DetailedHelp.vue';
+import DonationCard from '../components/HelpCard/DetailedHelpCard/DonationCard.vue';
+
 import PageTemplate from '../components/PageTemplate.vue';
 
 const props = defineProps<{ dataDetailedHelp: HelpRequestData }>();
@@ -15,8 +16,12 @@ const donationData = {
 </script>
 <template>
   <PageTemplate title="Запрос о помощи">
-    <v-col class="card" cols="12" md="7" style="order: 0"> <DetailedHelp :dataDetailedHelp="dataDetailedHelp" /></v-col>
-    <v-col class="card" cols="12" md="4"><DonationCard :donationData="donationData" /></v-col>
+    <v-col class="card" cols="12" md="7" style="order: 0">
+      <DetailedHelp :dataDetailedHelp="dataDetailedHelp" />
+    </v-col>
+    <v-col class="card" cols="12" md="4">
+      <DonationCard :donationData="donationData" />
+    </v-col>
   </PageTemplate>
 </template>
 <style scoped>
