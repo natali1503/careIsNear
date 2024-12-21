@@ -18,7 +18,7 @@ const arrNumberPagesInPagination = computed(() =>
 );
 </script>
 <template>
-  <div style="display: flex; flex-direction: row">
+  <div style="display: flex; flex-direction: row; gap: 6px">
     <v-btn
       icon="mdi-chevron-left"
       size="small"
@@ -83,7 +83,7 @@ const arrNumberPagesInPagination = computed(() =>
   border: 0;
 }
 .paginationPage:active {
-  background-color: #1e88e5;
+  background-color: rgba(30, 136, 229, 0.5);
   transition: background-color 0.5s ease-out 100ms;
 }
 .currentPage {

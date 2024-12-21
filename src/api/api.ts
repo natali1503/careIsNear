@@ -2,13 +2,21 @@ import { Options } from '@hey-api/client-fetch';
 
 import {
   client,
+  deleteApiUserFavouritesByRequestId,
   getApiRequest,
   getApiRequestById,
   getApiUser,
+  getApiUserFavourites,
   postApiAuth,
   postApiRequestByIdContribution,
+  postApiUserFavourites,
 } from './generated/services.gen';
-import { GetApiRequestResponse, GetApiUserResponse, HelpRequestData } from './generated/types.gen';
+import {
+  GetApiRequestResponse,
+  GetApiUserFavouritesResponse,
+  GetApiUserResponse,
+  HelpRequestData,
+} from './generated/types.gen';
 
 class Api {
   private readonly url: string;
@@ -42,8 +50,29 @@ class Api {
       throw Error;
     }
   }
-  getUserFavourites() {}
-  addToFavourites() {}
+  async getUserFavourites(token: string) {
+    try {
+      const response = await getApiUserFavourites({
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = response.data as GetApiUserFavouritesResponse;
+      return data;
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
+  async addToFavourites(id: string, token: string) {
+    try {
+      const response = await postApiUserFavourites({
+        headers: { Authorization: `Bearer ${token}` },
+        body: { requestId: id },
+      });
+      console.log(response);
+    } catch (e) {
+      console.log(e);
+    }
+  }
   async getUserInfo(token: string) {
     try {
       const response = await getApiUser({
@@ -58,7 +87,17 @@ class Api {
       throw code;
     }
   }
-  removeFromFavourites() {}
+  async removeFromFavourites(id: string, token: string) {
+    if (!token) return;
+    try {
+      const response = await deleteApiUserFavouritesByRequestId({
+        headers: { Authorization: `Bearer ${token}` },
+        path: { requestId: id },
+      });
+    } catch (code) {
+      console.log(code);
+    }
+  }
   async contributeToRequest(id: string, token: string) {
     try {
       const response = await postApiRequestByIdContribution({

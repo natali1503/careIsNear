@@ -3,9 +3,11 @@ import { computed, onBeforeMount } from 'vue';
 import PageTemplate from '../components/PageTemplate.vue';
 import CardProfile from '../components/Profile/CardProfile.vue';
 import ProfileInfo from '../components/Profile/ProfileInfo.vue';
+
 import { useProfileInfo } from '../store/profileInfo';
 
 const profileInfoStore = useProfileInfo();
+
 onBeforeMount(() => {
   profileInfoStore.getProfileInfo();
 });

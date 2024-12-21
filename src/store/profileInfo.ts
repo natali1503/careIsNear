@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 import { api } from '../api/api';
 import { GetApiUserResponse } from '../api/generated';
+import { keyForLocalStorage } from '../general/constants/keyForLocalStorage';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
 
 import { useAuthStore } from './auth';
@@ -16,7 +17,8 @@ export const useProfileInfo = defineStore('profileInfo', {
   actions: {
     async getProfileInfo() {
       try {
-        const token = getLocalStorage('tokenAuth');
+        if (this.isData) return;
+        const token = getLocalStorage(keyForLocalStorage.tokenAuth);
         if (token === null) return;
         const data = await api.getUserInfo(token);
         this.data = data;

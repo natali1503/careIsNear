@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 
 import { api } from '../api/api';
 import { HelpRequestData } from '../api/generated';
+import { keyForLocalStorage } from '../general/constants/keyForLocalStorage';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
 
 export const useDetailedHelpRequests = defineStore('detailedHelpRequests', {
@@ -15,7 +16,7 @@ export const useDetailedHelpRequests = defineStore('detailedHelpRequests', {
     async getRequestDetails(id: string) {
       try {
         this.isLoading = true;
-        const token = getLocalStorage('tokenAuth');
+        const token = getLocalStorage(keyForLocalStorage.tokenAuth);
         if (!token) return;
         const data = await api.getRequestDetails(id, token);
         this.data = data;

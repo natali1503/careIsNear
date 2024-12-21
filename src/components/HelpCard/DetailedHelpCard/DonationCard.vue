@@ -1,26 +1,8 @@
 <script setup lang="ts">
 import { dateFormatting } from '../../../general/dateFormatting';
-import { sendDonation } from '../../../general/sendDonation';
 import DonationStatusCard from './element/DonationStatusCard.vue';
 
 const props = defineProps<{ donationData }>();
-const requestGoalCurrentValueFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' })
-  .format(props.donationData.requestGoalCurrentValue)
-  .concat(' руб');
-
-const requestGoalFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' })
-  .format(props.donationData.requestGoal)
-  .concat(' руб');
-
-const contributorsCountFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' }).format(
-  props.donationData.contributorsCount,
-);
-const percentageOfAssistance =
-  Math.round(props.donationData.requestGoalCurrentValue / props.donationData.requestGoal) * 100;
-
-function onHandleClick() {
-  sendDonation('f2f48ea4-9172-4434-b55f-a94862c1529c');
-}
 </script>
 <template>
   <v-row style="margin: 0; padding: 0; padding: 0 20px"> <h6 class="mainTitle">Вместе для добрых дел</h6></v-row>

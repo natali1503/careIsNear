@@ -1,17 +1,26 @@
 <script setup lang="ts">
+import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
+import { computed } from 'vue';
 import { HelpRequestData } from '../../../api/generated';
 import FavoriteButton from '../../../components/FavoriteButton.vue';
 import { dateFormatting } from '../../../general/dateFormatting';
 import DataCell from '../../DataCell.vue';
 import ActionsSchedule from './element/ActionsSchedule.vue';
 import VerifiedOrganization from './element/VerifiedOrganization.vue';
-const props = defineProps<{ dataDetailedHelp: HelpRequestData }>();
+
+const props = defineProps<{ dataDetailedHelp: HelpRequestData; isFavourites: boolean }>();
 </script>
 <template>
   <div class="detailedHelp">
     <div style="display: flex; flex-direction: row; padding-right: 15px; justify-content: space-between">
       <h5 class="title">{{ dataDetailedHelp.title.split(' ').slice(1).join(' ') }}</h5>
-      <FavoriteButton :empty="true" type="withText" operation="add" />
+      <FavoriteButton
+        :empty="true"
+        type="withText"
+        operation="add"
+        :id="dataDetailedHelp.id"
+        :isFavourites="isFavourites"
+      />
     </div>
     <div class="detailedHelpData">
       <div class="organization">

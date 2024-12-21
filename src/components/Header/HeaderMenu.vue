@@ -6,7 +6,7 @@ import { useAuthStore } from '../../store/auth';
 const router = useRouter();
 const authStore = useAuthStore();
 function onHandleProfile() {
-  router.push(routesName.profile);
+  router.push({ name: routesName.profile });
 }
 function onHandleLogout() {
   authStore.logout();

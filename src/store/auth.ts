@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 
 import { api } from '../api/api';
+import { keyForLocalStorage } from '../general/constants/keyForLocalStorage';
 import { addLocalStorage } from '../general/localStorage/addLocalStorage';
 import { deleteLocalStorage } from '../general/localStorage/deleteLocalStorage';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
@@ -19,10 +20,10 @@ export const useAuthStore = defineStore('auth', {
         this.isLoading = true;
         const token = await api.auth({ login, password });
         if (token) {
-          addLocalStorage('tokenAuth', token);
+          addLocalStorage(keyForLocalStorage.tokenAuth, token);
           this.isAuth = true;
           this.isError = false;
-          addLocalStorage('isAuth', String(this.isAuth));
+          addLocalStorage(keyForLocalStorage.isAuth, String(this.isAuth));
         }
       } catch (e) {
         this.isAuth = false;
@@ -32,17 +33,17 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     logout() {
-      deleteLocalStorage('tokenAuth');
+      deleteLocalStorage(keyForLocalStorage.tokenAuth);
       this.isAuth = false;
-      deleteLocalStorage('isAuth');
+      deleteLocalStorage(keyForLocalStorage.tokenAuth);
     },
 
     setIsAuth() {
-      if (getLocalStorage('tokenAuth')) this.isAuth = true;
+      if (getLocalStorage(keyForLocalStorage.tokenAuth)) this.isAuth = true;
       else this.isAuth = false;
     },
     restoreState() {
-      const storedState = localStorage.getItem('isAuth');
+      const storedState = localStorage.getItem(keyForLocalStorage.isAuth);
       if (storedState) {
         this.isAuth = JSON.parse(storedState);
       }

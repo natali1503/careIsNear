@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import Logo from './Logo.vue';
-import HeaderMenu from './HeaderMenu.vue';
 import { useRouter } from 'vue-router';
 import { routesName } from '../../router';
+import HeaderMenu from './HeaderMenu.vue';
+import Logo from './Logo.vue';
 
 const router = useRouter();
 </script>
@@ -11,7 +11,7 @@ const router = useRouter();
     <v-row style="justify-content: center; max-height: 84px; margin: 0; height: 100%; align-items: center">
       <v-col md="4"><Logo /></v-col>
       <v-col md="4" style="display: flex; justify-content: center">
-        <button @click="router.push(routesName.helpRequests)">Запросы о помощи</button>
+        <button @click="router.push({ name: routesName.helpRequests })">Запросы о помощи</button>
       </v-col>
       <v-col md="4" style="display: flex; justify-content: flex-end">
         <HeaderMenu />

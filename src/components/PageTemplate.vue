@@ -2,7 +2,8 @@
 const props = defineProps({ title: String });
 </script>
 <template>
-  <v-container
+  <div
+    class="test"
     style="
       width: 100%;
       height: 100%;
@@ -17,10 +18,10 @@ const props = defineProps({ title: String });
     <v-row style="margin: 0; padding-bottom: 20px">
       <h4 class="title">{{ title }}</h4>
     </v-row>
-    <v-row style="margin: 0; justify-content: space-between">
+    <v-row style="margin: 0; justify-content: space-between; margin-bottom: 60px">
       <slot></slot>
     </v-row>
-  </v-container>
+  </div>
 </template>
 <style scoped>
 .title {

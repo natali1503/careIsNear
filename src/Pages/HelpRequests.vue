@@ -3,17 +3,16 @@ import FilterPanel from '@/components/Filter/FilterPanel.vue';
 import PageTemplate from '@/components/PageTemplate.vue';
 import SearchBar from '@/components/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/SearchFilterResults.vue';
+import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { onBeforeMount } from 'vue';
-import { useDetailedHelpRequests } from '../store/detailedHelpRequests';
 import { useHelpRequests } from '../store/helpRequests';
-import DetailedHelpCard from './DetailedHelpCard.vue';
 
 const helpRequests = useHelpRequests();
-// const detailedHelpRequests = useDetailedHelpRequests();
+const favouritesRequestsHelp = useFavouritesRequestsHelp();
 
 onBeforeMount(() => {
   helpRequests.getHelpRequests();
-  // detailedHelpRequests.getRequestDetails('f2f48ea4-9172-4434-b55f-a94862c1529c');
+  favouritesRequestsHelp.getFavouritesRequestsHelp();
 });
 </script>
 <template>
@@ -30,6 +29,7 @@ onBeforeMount(() => {
           v-if="helpRequests.isData"
           :helpRequestData="helpRequests.data"
           :totalRequests="helpRequests.isData ? helpRequests.data.length : 0"
+          :favouritesId="favouritesRequestsHelp.favouritesId"
         />
       </v-row>
     </v-col>

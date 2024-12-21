@@ -6,6 +6,7 @@ import { createVuetify } from 'vuetify';
 
 // import 'vuetify/styles';
 import { api } from '../../src/api/api';
+import { keyForLocalStorage } from '../../src/general/constants/keyForLocalStorage';
 import Login from '../../src/Pages/Login.vue';
 
 describe('Login', () => {
@@ -67,7 +68,7 @@ describe('Login', () => {
       login: 'testLogin',
       password: 'testPassword',
     });
-    expect(localStorage.getItem('tokenAuth')).toBe('wegwegwe');
+    expect(localStorage.getItem(keyForLocalStorage.tokenAuth)).toBe('wegwegwe');
   });
 
   it('Маршрутизация на helpRequests после успешной авторизации', async () => {

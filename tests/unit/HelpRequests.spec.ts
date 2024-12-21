@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { api } from '../../src/api/api';
+import { keyForLocalStorage } from '../../src/general/constants/keyForLocalStorage';
 import HelpRequests from '../../src/Pages/HelpRequests.vue';
 
 describe('HelpRequests', () => {
@@ -11,7 +12,7 @@ describe('HelpRequests', () => {
     setActivePinia(pinia);
     vi.clearAllMocks();
     localStorage.setItem(
-      'tokenAuth',
+      keyForLocalStorage.tokenAuth,
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImU0ZDE4ZjIzLWMzZjItNDQ2MC05YTc3LTliOTViZjZiMWEzMCIsImlhdCI6MTczMjcyMTc5NSwiZXhwIjoxNzMyNzI1Mzk1fQ.Zk-7KtvAWISddtb4GxaDe8PSAqKO6zgYwavN-FhGo3Q',
     );
   });

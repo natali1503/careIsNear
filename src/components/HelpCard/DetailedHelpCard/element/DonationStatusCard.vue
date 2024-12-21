@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRoute } from 'vue-router';
 import { sendDonation } from '../../../../general/sendDonation';
 
 const props = defineProps<{
@@ -6,7 +7,7 @@ const props = defineProps<{
   requestGoal: number;
   contributorsCount: number;
 }>();
-
+const route = useRoute();
 const requestGoalCurrentValueFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' })
   .format(props.requestGoalCurrentValue)
   .concat(' руб');
@@ -15,7 +16,8 @@ const contributorsCountFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal
 const percentageOfAssistance = Math.round(props.requestGoalCurrentValue / props.requestGoal) * 100;
 
 function onHandleClick() {
-  sendDonation('f2f48ea4-9172-4434-b55f-a94862c1529c');
+  const id = route.params.id;
+  if (typeof id === 'string') sendDonation(id);
 }
 </script>
 <template>

@@ -2,12 +2,13 @@
 import { GetApiRequestResponse } from '@/api/generated/types.gen';
 import { VIEW_MODES } from '@/general/constants/viewModes';
 import { computed, ref } from 'vue';
-import GridIteam from './HelpCard/GridIteam.vue';
-import ListIteam from './HelpCard/ListIteam.vue';
+import GridItem from './HelpCard/GridItem.vue';
+import ListItem from './HelpCard/ListItem.vue';
+import MapHelpRequests from './HelpCard/MapHelpRequests.vue';
 import Pagination from './Pagination.vue';
 import ViewSwitchPanel from './ViewSwitchPanel.vue';
 
-const props = defineProps<{ totalRequests: number; helpRequestData: GetApiRequestResponse }>();
+const props = defineProps<{ totalRequests: number; helpRequestData: GetApiRequestResponse; favouritesId: string[] }>();
 const selectedViewMode = ref(1);
 const currentPage = ref(1);
 function onHandleUpdateViewMode(updateViewMode) {
@@ -25,13 +26,15 @@ const helpRequestDataForPage = computed(() => props.helpRequestData.slice(curren
       <ViewSwitchPanel @updateViewMode="onHandleUpdateViewMode" />
     </v-row>
     <v-row style="margin: 0; padding: 0">
-      <GridIteam v-if="VIEW_MODES[selectedViewMode] === VIEW_MODES[0]" />
+      <GridItem v-if="VIEW_MODES[selectedViewMode] === VIEW_MODES[0]" />
 
-      <ListIteam
+      <ListItem
         v-for="helpRequestDataIteam in helpRequestDataForPage"
         v-if="VIEW_MODES[selectedViewMode] === VIEW_MODES[1]"
         :helpRequestDataIteam="helpRequestDataIteam"
+        :isFavourites="favouritesId.includes(helpRequestDataIteam.id)"
       />
+      <MapHelpRequests v-if="VIEW_MODES[selectedViewMode] === VIEW_MODES[2]" />
     </v-row>
     <v-row style="margin: 0; padding: 30px 0; flex-direction: row; align-items: center; justify-content: center">
       <Pagination
