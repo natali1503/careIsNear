@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { addRequestHelp } from '@/api/addRequestHelp';
-import { removeRequestHelp } from '@/api/removeRequestHelp';
+import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 
 const props = defineProps<{
   isFavourites: boolean;
   type: 'withText' | 'withoutTest';
   id: string;
 }>();
+const favouritesRequestsHelp = useFavouritesRequestsHelp();
 function handleClick(e) {
   e.stopPropagation();
-  props.isFavourites ? removeRequestHelp(props.id) : addRequestHelp(props.id);
+  props.isFavourites
+    ? favouritesRequestsHelp.removeRequestHelp(props.id)
+    : favouritesRequestsHelp.addRequestHelp(props.id);
 }
 </script>
 <template>
   <v-tooltip :text="isFavourites ? 'Удалить из избранного' : 'Добавить в избранное'">
     <template v-slot:activator="{ props }">
-      <button v-bind="props" @click="handleClick" class="favoriteButton">
+      <button v-bind="type === 'withoutTest' && props" @click="handleClick" class="favoriteButton">
         <div>
           <v-icon :icon="isFavourites ? 'mdi-star-outline' : 'mdi-star'" style="color: rgba(0, 0, 0, 0.5)"></v-icon>
         </div>
@@ -41,5 +43,8 @@ function handleClick(e) {
   padding: 4px 10px;
   align-items: center;
   max-height: max-content;
+}
+.favoriteButton:hover {
+  background-color: rgb(245, 245, 245, 0.5);
 }
 </style>

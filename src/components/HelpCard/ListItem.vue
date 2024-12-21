@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { HelpRequestData } from '@/api/generated';
 import { routesName } from '@/router';
-import { onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { dateFormatting } from '../../general/dateFormatting';
-import { useDetailedHelpRequests } from '../../store/detailedHelpRequests';
 import DataCell from '../DataCell.vue';
 import FavoriteButton from '../FavoriteButton.vue';
 import DonationStatusCard from './DetailedHelpCard/element/DonationStatusCard.vue';

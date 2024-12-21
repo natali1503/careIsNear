@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from 'vue';
-import { HelpRequestData } from '../api/generated';
+import { useRoute } from 'vue-router';
 import DetailedHelp from '../components/HelpCard/DetailedHelpCard/DetailedHelp.vue';
 import DonationCard from '../components/HelpCard/DetailedHelpCard/DonationCard.vue';
 
 import { useDetailedHelpRequests } from '@/store/detailedHelpRequests';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
-import { useRoute } from 'vue-router';
 import PageTemplate from '../components/PageTemplate.vue';
-const detailedHelpRequests = useDetailedHelpRequests();
+
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
+const detailedHelpRequests = useDetailedHelpRequests();
 const route = useRoute();
 const id = route.params.id;
 onBeforeMount(() => {
   if (typeof id === 'string') detailedHelpRequests.getRequestDetails(id);
+  if (!favouritesRequestsHelp.isData) favouritesRequestsHelp.getFavouritesRequestsHelp();
 });
 const isLoading = computed(() => detailedHelpRequests.isLoading);
 const isError = computed(() => detailedHelpRequests.isError);
@@ -30,7 +31,7 @@ const donationData = computed(() => ({
 const isFavourites = computed(() => {
   if (favouritesRequestsHelp.isData) {
     if (typeof id === 'string') return favouritesRequestsHelp.favouritesId.includes(id) ? true : false;
-  } else return false;
+  }
 });
 </script>
 <template>

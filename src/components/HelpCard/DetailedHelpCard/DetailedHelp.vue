@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
-import { computed } from 'vue';
 import { HelpRequestData } from '../../../api/generated';
 import FavoriteButton from '../../../components/FavoriteButton.vue';
 import { dateFormatting } from '../../../general/dateFormatting';
