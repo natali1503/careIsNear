@@ -4,6 +4,8 @@ import PageTemplate from '../components/PageTemplate.vue';
 import CardProfile from '../components/Profile/CardProfile.vue';
 import ProfileInfo from '../components/Profile/ProfileInfo.vue';
 
+import Loading from '@/components/Loading.vue';
+import NoDataError from '@/components/NoDataError.vue';
 import { useProfileInfo } from '../store/profileInfo';
 
 const profileInfoStore = useProfileInfo();
@@ -19,6 +21,8 @@ const data = computed(() => profileInfoStore.data || {});
 <template>
   <div style="width: 100%; padding: 0; height: 100%">
     <PageTemplate title="Мой профиль">
+      <NoDataError v-if="isError" text="Ошибка! Не удалось загрузить информацию" />
+      <Loading v-if="isLoading" />
       <CardProfile v-if="isData" :name="data.name" :lastname="data.lastName" :status="data.status" />
       <ProfileInfo v-if="isData" :dataUser="data" />
     </PageTemplate>

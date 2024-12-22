@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { HelpRequestData } from '../../../api/generated';
-import FavoriteButton from '../../../components/FavoriteButton.vue';
-import { dateFormatting } from '../../../general/dateFormatting';
+import { HelpRequestData } from '@/api/generated';
+
+import FavoriteButton from '@/components/FavoriteButton.vue';
+import { dateFormatting } from '@/general/dateFormatting';
 import DataCell from '../../DataCell.vue';
 import ActionsSchedule from './element/ActionsSchedule.vue';
 import VerifiedOrganization from './element/VerifiedOrganization.vue';

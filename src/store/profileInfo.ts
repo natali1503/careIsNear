@@ -16,18 +16,20 @@ export const useProfileInfo = defineStore('profileInfo', {
   }),
   actions: {
     async getProfileInfo() {
+      if (this.isData) return;
       try {
-        if (this.isData) return;
         const token = getLocalStorage(keyForLocalStorage.tokenAuth);
         if (token === null) return;
         const data = await api.getUserInfo(token);
         this.data = data;
         this.isData = true;
+        this.isError = false;
       } catch (e) {
         if (e === 403) {
           const authStore = useAuthStore();
           authStore.logout();
         }
+        this.isError = true;
         this.isData = false;
       } finally {
         this.isLoading = false;

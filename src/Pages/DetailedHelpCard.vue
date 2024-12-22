@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
-import DetailedHelp from '../components/HelpCard/DetailedHelpCard/DetailedHelp.vue';
-import DonationCard from '../components/HelpCard/DetailedHelpCard/DonationCard.vue';
 
+import DetailedHelp from '@/components/HelpRequests/HelpCard/DetailedHelpCard/DetailedHelp.vue';
+import DonationCard from '@/components/HelpRequests/HelpCard/DetailedHelpCard/DonationCard.vue';
+import NoDataError from '@/components/NoDataError.vue';
 import { useDetailedHelpRequests } from '@/store/detailedHelpRequests';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import PageTemplate from '../components/PageTemplate.vue';
@@ -17,7 +18,7 @@ onBeforeMount(() => {
   if (!favouritesRequestsHelp.isData) favouritesRequestsHelp.getFavouritesRequestsHelp();
 });
 const isLoading = computed(() => detailedHelpRequests.isLoading);
-const isError = computed(() => detailedHelpRequests.isError);
+const isError = computed(() => detailedHelpRequests.isError || favouritesRequestsHelp.isError);
 const isData = computed(() => detailedHelpRequests.isData || false);
 const data = computed(() => detailedHelpRequests.data || {});
 const donationData = computed(() => ({
@@ -35,11 +36,12 @@ const isFavourites = computed(() => {
 });
 </script>
 <template>
-  <PageTemplate title="Запрос о помощи" v-if="isData">
-    <v-col class="card" cols="12" md="7" style="order: 0">
+  <PageTemplate title="Запрос о помощи">
+    <NoDataError v-if="isError" text="Ошибка! Не удалось загрузить информацию" />
+    <v-col class="card" cols="12" md="7" style="order: 0" v-if="isData">
       <DetailedHelp :dataDetailedHelp="data" :isFavourites="isFavourites" />
     </v-col>
-    <v-col class="card" cols="12" md="4">
+    <v-col class="card" cols="12" md="4" v-if="isData">
       <DonationCard :donationData="donationData" />
     </v-col>
   </PageTemplate>

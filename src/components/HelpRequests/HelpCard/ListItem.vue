@@ -2,9 +2,10 @@
 import { HelpRequestData } from '@/api/generated';
 import { routesName } from '@/router';
 import { useRouter } from 'vue-router';
-import { dateFormatting } from '../../general/dateFormatting';
+
+import FavoriteButton from '@/components/FavoriteButton.vue';
+import { dateFormatting } from '@/general/dateFormatting';
 import DataCell from '../DataCell.vue';
-import FavoriteButton from '../FavoriteButton.vue';
 import DonationStatusCard from './DetailedHelpCard/element/DonationStatusCard.vue';
 
 const props = defineProps<{ helpRequestDataIteam: HelpRequestData; isFavourites: boolean }>();

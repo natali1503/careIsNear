@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { dateFormatting } from '../../../general/dateFormatting';
+import { dateFormatting } from '@/general/dateFormatting';
 import DonationStatusCard from './element/DonationStatusCard.vue';
 
 const props = defineProps<{ donationData }>();

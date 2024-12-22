@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { sendDonation } from '@/general/sendDonation';
 import { useRoute } from 'vue-router';
-import { sendDonation } from '../../../../general/sendDonation';
 
 const props = defineProps<{
   requestGoalCurrentValue: number;

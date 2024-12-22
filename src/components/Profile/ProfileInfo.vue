@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { GetApiUserResponse } from '../../api/generated';
-import ViewSwitchPanel from '../ViewSwitchPanel.vue';
+import ViewSwitchPanel from '../HelpRequests/ViewSwitchPanel.vue';
 import Contacts from './element/Contacts.vue';
 import Favorites from './element/Favorites.vue';
 import PersonalData from './element/PersonalData.vue';

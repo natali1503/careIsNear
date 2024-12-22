@@ -13,6 +13,7 @@ export const useFavouritesRequestsHelp = defineStore('favouritesRequestsHelp', {
   }),
   actions: {
     async getFavouritesRequestsHelp() {
+      if (this.isData) return;
       try {
         this.isLoading = true;
         if (this.favouritesId.length > 0) return;
@@ -21,8 +22,10 @@ export const useFavouritesRequestsHelp = defineStore('favouritesRequestsHelp', {
         const data = await api.getUserFavourites(token);
         this.favouritesId = data;
         this.isData = true;
+        this.isError = false;
       } catch (e) {
         this.isData = false;
+        this.isError = true;
       } finally {
         this.isLoading = false;
       }
@@ -35,6 +38,7 @@ export const useFavouritesRequestsHelp = defineStore('favouritesRequestsHelp', {
         await api.addToFavourites(id, token);
         this.favouritesId.push(id);
       } catch (e) {
+        console.log(87978);
       } finally {
       }
     },

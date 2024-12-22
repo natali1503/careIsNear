@@ -69,8 +69,9 @@ class Api {
         body: { requestId: id },
       });
       console.log(response);
-    } catch (e) {
-      console.log(e);
+    } catch (code) {
+      if (code === 500) console.log('Сервер');
+      throw code;
     }
   }
   async getUserInfo(token: string) {
@@ -82,7 +83,6 @@ class Api {
       return data;
     } catch (code) {
       console.log(code);
-
       if (code === 500) console.log('Сервер');
       throw code;
     }
@@ -96,6 +96,8 @@ class Api {
       });
     } catch (code) {
       console.log(code);
+      if (code === 500) console.log('Сервер');
+      throw code;
     }
   }
   async contributeToRequest(id: string, token: string) {

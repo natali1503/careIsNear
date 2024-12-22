@@ -15,6 +15,7 @@ export const useHelpRequests = defineStore('helpRequests', {
   getters: {},
   actions: {
     async getHelpRequests() {
+      if (this.isData) return;
       try {
         if (this.data.length !== 0) return;
         this.isLoading = true;

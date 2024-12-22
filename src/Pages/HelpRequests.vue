@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import FilterPanel from '@/components/Filter/FilterPanel.vue';
 import PageTemplate from '@/components/PageTemplate.vue';
-import SearchBar from '@/components/SearchBar/SearchBar.vue';
-import SearchFilterResults from '@/components/SearchFilterResults.vue';
+
+import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
+import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
+import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
-import { onBeforeMount } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useHelpRequests } from '../store/helpRequests';
 
 const helpRequests = useHelpRequests();
@@ -14,6 +15,7 @@ onBeforeMount(() => {
   helpRequests.getHelpRequests();
   favouritesRequestsHelp.getFavouritesRequestsHelp();
 });
+const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
 </script>
 <template>
   <PageTemplate title="Запросы о помощи">
@@ -26,10 +28,10 @@ onBeforeMount(() => {
       </v-row>
       <v-row style="margin: 0; padding: 0">
         <SearchFilterResults
-          v-if="helpRequests.isData"
           :helpRequestData="helpRequests.data"
           :totalRequests="helpRequests.isData ? helpRequests.data.length : 0"
           :favouritesId="favouritesRequestsHelp.favouritesId"
+          :isError="isError"
         />
       </v-row>
     </v-col>

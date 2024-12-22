@@ -14,6 +14,7 @@ export const useDetailedHelpRequests = defineStore('detailedHelpRequests', {
   }),
   actions: {
     async getRequestDetails(id: string) {
+      if (this.isData) return;
       try {
         this.isLoading = true;
         const token = getLocalStorage(keyForLocalStorage.tokenAuth);
@@ -21,6 +22,7 @@ export const useDetailedHelpRequests = defineStore('detailedHelpRequests', {
         const data = await api.getRequestDetails(id, token);
         this.data = data;
         this.isData = true;
+        this.isError = false;
       } catch (e) {
         this.isError = true;
         this.isData = false;
