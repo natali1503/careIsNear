@@ -27,7 +27,7 @@ onBeforeMount(async () => {
 });
 const isLoading = computed(() => detailedHelpRequests.isLoading);
 const isError = computed(() => detailedHelpRequests.isError || favouritesRequestsHelp.isError);
-const isData = computed(() => detailedHelpRequests.isData || false);
+const isData = computed(() => detailedHelpRequests.isData && favouritesRequestsHelp.isData);
 const data = computed(() => detailedHelpRequests.data || {});
 const donationData = computed(() => ({
   goalDescription: data.value.goalDescription,
