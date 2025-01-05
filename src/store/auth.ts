@@ -36,7 +36,7 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       deleteLocalStorage(keyForLocalStorage.tokenAuth);
       this.isAuth = false;
-      deleteLocalStorage(keyForLocalStorage.tokenAuth);
+      deleteLocalStorage(keyForLocalStorage.isAuth);
     },
 
     setIsAuth() {

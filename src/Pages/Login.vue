@@ -42,5 +42,6 @@ function handleClickDataAuth(dataAuth: { login: string; password: string }) {
 .main {
   display: flex;
   min-height: 100%;
+  width: 100%;
 }
 </style>

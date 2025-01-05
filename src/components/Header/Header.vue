@@ -7,16 +7,14 @@ import Logo from './Logo.vue';
 const router = useRouter();
 </script>
 <template>
-  <v-container style="padding: 0">
-    <v-row style="justify-content: center; max-height: 84px; margin: 0; height: 100%; align-items: center">
-      <v-col md="4"><Logo /></v-col>
-      <v-col md="4" style="display: flex; justify-content: center">
-        <button @click="router.push({ name: routesName.helpRequests })">Запросы о помощи</button>
-      </v-col>
-      <v-col md="4" style="display: flex; justify-content: flex-end">
-        <HeaderMenu />
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row style="justify-content: center; max-height: 84px; margin: 0; height: 100%; align-items: center">
+    <v-col style="padding: 0"><Logo /></v-col>
+    <v-col style="display: flex; justify-content: center; padding: 0; width: 100%">
+      <button @click="router.push({ name: routesName.helpRequests })">Запросы о помощи</button>
+    </v-col>
+    <v-col style="display: flex; justify-content: flex-end; padding: 0">
+      <HeaderMenu />
+    </v-col>
+  </v-row>
 </template>
 <style scoped></style>
