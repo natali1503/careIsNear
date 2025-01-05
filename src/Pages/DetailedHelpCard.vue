@@ -2,20 +2,28 @@
 import { computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { apiMessages } from '@/api/apiMessages';
 import DetailedHelp from '@/components/HelpRequests/HelpCard/DetailedHelpCard/DetailedHelp.vue';
 import DonationCard from '@/components/HelpRequests/HelpCard/DetailedHelpCard/DonationCard.vue';
 import NoDataError from '@/components/NoDataError.vue';
 import { useDetailedHelpRequests } from '@/store/detailedHelpRequests';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
+import { useToast } from 'vue-toastification';
 import PageTemplate from '../components/PageTemplate.vue';
 
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
 const detailedHelpRequests = useDetailedHelpRequests();
 const route = useRoute();
 const id = route.params.id;
-onBeforeMount(() => {
-  if (typeof id === 'string') detailedHelpRequests.getRequestDetails(id);
-  if (!favouritesRequestsHelp.isData) favouritesRequestsHelp.getFavouritesRequestsHelp();
+onBeforeMount(async () => {
+  try {
+    if (typeof id === 'string') await detailedHelpRequests.getRequestDetails(id);
+    if (!favouritesRequestsHelp.isData) await favouritesRequestsHelp.getFavouritesRequestsHelp();
+  } catch (codeError) {
+    const toast = useToast();
+    if (codeError === 500) toast.error(apiMessages.generalError);
+    else toast.error('Что-то еще');
+  }
 });
 const isLoading = computed(() => detailedHelpRequests.isLoading);
 const isError = computed(() => detailedHelpRequests.isError || favouritesRequestsHelp.isError);

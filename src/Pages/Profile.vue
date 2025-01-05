@@ -4,14 +4,22 @@ import PageTemplate from '../components/PageTemplate.vue';
 import CardProfile from '../components/Profile/CardProfile.vue';
 import ProfileInfo from '../components/Profile/ProfileInfo.vue';
 
+import { apiMessages } from '@/api/apiMessages';
 import Loading from '@/components/Loading.vue';
 import NoDataError from '@/components/NoDataError.vue';
+import { useToast } from 'vue-toastification';
 import { useProfileInfo } from '../store/profileInfo';
 
 const profileInfoStore = useProfileInfo();
 
-onBeforeMount(() => {
-  profileInfoStore.getProfileInfo();
+onBeforeMount(async () => {
+  try {
+    await profileInfoStore.getProfileInfo();
+  } catch (codeError) {
+    const toast = useToast();
+    if (codeError === 500) toast.error(apiMessages.generalError);
+    else toast.error('Что-то еще');
+  }
 });
 const isLoading = computed(() => profileInfoStore.isLoading);
 const isError = computed(() => profileInfoStore.isError);

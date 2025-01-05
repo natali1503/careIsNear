@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { apiMessages } from '@/api/apiMessages';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
+import { useToast } from 'vue-toastification';
 
 const props = defineProps<{
   isFavourites: boolean;
@@ -7,11 +9,21 @@ const props = defineProps<{
   id: string;
 }>();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
-function handleClick(e) {
+async function handleClick(e) {
   e.stopPropagation();
-  props.isFavourites
-    ? favouritesRequestsHelp.removeRequestHelp(props.id)
-    : favouritesRequestsHelp.addRequestHelp(props.id);
+  const toast = useToast();
+  try {
+    if (props.isFavourites) {
+      await favouritesRequestsHelp.removeRequestHelp(props.id);
+      toast.success(apiMessages.removeFromFavourites.success);
+    } else {
+      await favouritesRequestsHelp.addRequestHelp(props.id);
+      toast.success(apiMessages.addToFavourites.success);
+    }
+  } catch (codeError) {
+    if (codeError === 500) toast.error(apiMessages.generalError);
+    else toast.error('Что-то еще');
+  }
 }
 </script>
 <template>

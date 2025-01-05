@@ -25,12 +25,14 @@ export const useProfileInfo = defineStore('profileInfo', {
         this.isData = true;
         this.isError = false;
       } catch (e) {
+        this.isError = true;
+        this.isData = false;
         if (e === 403) {
           const authStore = useAuthStore();
           authStore.logout();
+        } else if (e === 500) {
+          throw e;
         }
-        this.isError = true;
-        this.isData = false;
       } finally {
         this.isLoading = false;
       }

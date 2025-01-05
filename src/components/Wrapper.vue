@@ -11,7 +11,7 @@ import Content from './Content.vue';
     <v-row style="justify-content: center; max-height: 84px; border-bottom: 1px solid #e0e0e0; margin: 0">
       <Header />
     </v-row>
-    <v-row cols="12" style="flex-grow: 1; margin: 0">
+    <v-row cols="12" style="flex-grow: 1; margin: 0;">
       <Content>
         <slot></slot>
       </Content>

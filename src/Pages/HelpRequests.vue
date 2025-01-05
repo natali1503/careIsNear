@@ -1,19 +1,27 @@
 <script setup lang="ts">
 import PageTemplate from '@/components/PageTemplate.vue';
 
+import { apiMessages } from '@/api/apiMessages';
 import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
 import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { computed, onBeforeMount } from 'vue';
+import { useToast } from 'vue-toastification';
 import { useHelpRequests } from '../store/helpRequests';
 
 const helpRequests = useHelpRequests();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
 
-onBeforeMount(() => {
-  helpRequests.getHelpRequests();
-  favouritesRequestsHelp.getFavouritesRequestsHelp();
+onBeforeMount(async () => {
+  try {
+    await helpRequests.getHelpRequests();
+    await favouritesRequestsHelp.getFavouritesRequestsHelp();
+  } catch (codeError) {
+    const toast = useToast();
+    if (codeError === 500) toast.error(apiMessages.generalError);
+    else toast.error('Что-то еще');
+  }
 });
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
 </script>

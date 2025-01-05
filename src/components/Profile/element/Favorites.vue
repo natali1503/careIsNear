@@ -1,17 +1,25 @@
 <script setup lang="ts">
+import { apiMessages } from '@/api/apiMessages';
 import Pagination from '@/components/HelpRequests/Pagination.vue';
 import ViewRequests from '@/components/HelpRequests/ViewRequests.vue';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { useHelpRequests } from '@/store/helpRequests';
 import { computed, onBeforeMount, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 const props = defineProps<{ selectedViewMode: number }>();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
 const helpRequests = useHelpRequests();
 
-onBeforeMount(() => {
-  helpRequests.getHelpRequests();
-  favouritesRequestsHelp.getFavouritesRequestsHelp();
+onBeforeMount(async () => {
+  try {
+    await helpRequests.getHelpRequests();
+    await favouritesRequestsHelp.getFavouritesRequestsHelp();
+  } catch (codeError) {
+    const toast = useToast();
+    if (codeError === 500) toast.error(apiMessages.generalError);
+    else toast.error('Что-то еще');
+  }
 });
 const currentPage = ref(1);
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);

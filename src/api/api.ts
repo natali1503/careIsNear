@@ -42,12 +42,8 @@ class Api {
       const response = await postApiAuth({ body: { login, password } });
       this.isAuth = response.data?.auth;
       return response.data?.token;
-    } catch (code) {
-      console.log(code);
-      if (code === 500) console.log('Сервер');
-      else if (code === 400) console.log('Неверный логин/пароль');
-      else console.log('Что-то еще');
-      throw Error;
+    } catch (e) {
+      throw e;
     }
   }
   async getUserFavourites(token: string) {
@@ -58,20 +54,17 @@ class Api {
       const data = response.data as GetApiUserFavouritesResponse;
       return data;
     } catch (e) {
-      console.log(e);
       throw e;
     }
   }
   async addToFavourites(id: string, token: string) {
     try {
-      const response = await postApiUserFavourites({
+      await postApiUserFavourites({
         headers: { Authorization: `Bearer ${token}` },
         body: { requestId: id },
       });
-      console.log(response);
-    } catch (code) {
-      if (code === 500) console.log('Сервер');
-      throw code;
+    } catch (e) {
+      throw e;
     }
   }
   async getUserInfo(token: string) {
@@ -81,34 +74,29 @@ class Api {
       } as Options<{ headers: Record<string, string> }>);
       const data = response.data as GetApiUserResponse;
       return data;
-    } catch (code) {
-      console.log(code);
-      if (code === 500) console.log('Сервер');
-      throw code;
+    } catch (e) {
+      throw e;
     }
   }
   async removeFromFavourites(id: string, token: string) {
     if (!token) return;
     try {
-      const response = await deleteApiUserFavouritesByRequestId({
+      await deleteApiUserFavouritesByRequestId({
         headers: { Authorization: `Bearer ${token}` },
         path: { requestId: id },
       });
-    } catch (code) {
-      console.log(code);
-      if (code === 500) console.log('Сервер');
-      throw code;
+    } catch (e) {
+      throw e;
     }
   }
   async contributeToRequest(id: string, token: string) {
     try {
-      const response = await postApiRequestByIdContribution({
+      await postApiRequestByIdContribution({
         headers: { Authorization: `Bearer ${token}` },
         path: { id },
       });
-      console.log(response);
     } catch (e) {
-      console.log(e);
+      throw e;
     }
   }
   async getRequestDetails(id: string, token: string) {
@@ -116,10 +104,8 @@ class Api {
       const response = await getApiRequestById({ headers: { Authorization: `Bearer ${token}` }, path: { id } });
       const data = response.data as HelpRequestData;
       return data;
-    } catch (code) {
-      console.log(code);
-      if (code === 500) console.log('Сервер');
-      throw Error;
+    } catch (e) {
+      throw e;
     }
   }
   async getRequests(token: string) {
@@ -129,13 +115,10 @@ class Api {
       } as Options<{ headers: Record<string, string> }>);
       const data = response.data as GetApiRequestResponse;
       return data;
-    } catch (code) {
-      console.log(code);
-      if (code === 500) console.log('Сервер');
-      throw Error;
+    } catch (e) {
+      throw e;
     }
   }
-  errorHandling() {}
 }
 export const api = new Api('http://localhost:4040');
 api.init();

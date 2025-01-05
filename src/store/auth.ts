@@ -28,6 +28,7 @@ export const useAuthStore = defineStore('auth', {
       } catch (e) {
         this.isAuth = false;
         this.isError = true;
+        throw e;
       } finally {
         this.isLoading = false;
       }

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { apiMessages } from '@/api/apiMessages';
 import { sendDonation } from '@/general/sendDonation';
 import { useRoute } from 'vue-router';
+import { useToast } from 'vue-toastification';
 
 const props = defineProps<{
   requestGoalCurrentValue: number;
@@ -15,9 +17,18 @@ const requestGoalFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' }).f
 const contributorsCountFormat = new Intl.NumberFormat('ru-RU', { style: 'decimal' }).format(props.contributorsCount);
 const percentageOfAssistance = Math.round(props.requestGoalCurrentValue / props.requestGoal) * 100;
 
-function onHandleClick() {
+async function onHandleClick() {
   const id = route.params.id;
-  if (typeof id === 'string') sendDonation(id);
+  const toast = useToast();
+  if (typeof id === 'string') {
+    try {
+      await sendDonation(id);
+      toast.success(apiMessages.contributeToRequest.success);
+    } catch (codeError) {
+      if (codeError === 500) toast.error(apiMessages.generalError);
+      else toast.error('Что-то еще');
+    }
+  }
 }
 </script>
 <template>

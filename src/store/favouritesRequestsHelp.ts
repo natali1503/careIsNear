@@ -26,6 +26,7 @@ export const useFavouritesRequestsHelp = defineStore('favouritesRequestsHelp', {
       } catch (e) {
         this.isData = false;
         this.isError = true;
+        throw e;
       } finally {
         this.isLoading = false;
       }
@@ -38,7 +39,7 @@ export const useFavouritesRequestsHelp = defineStore('favouritesRequestsHelp', {
         await api.addToFavourites(id, token);
         this.favouritesId.push(id);
       } catch (e) {
-        console.log(87978);
+        throw e;
       } finally {
       }
     },
@@ -49,6 +50,7 @@ export const useFavouritesRequestsHelp = defineStore('favouritesRequestsHelp', {
         await api.removeFromFavourites(id, token);
         this.favouritesId = this.favouritesId.filter((idRequest) => idRequest !== id);
       } catch (e) {
+        throw e;
       } finally {
       }
     },

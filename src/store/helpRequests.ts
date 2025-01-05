@@ -27,6 +27,7 @@ export const useHelpRequests = defineStore('helpRequests', {
       } catch (e) {
         this.isError = true;
         this.isData = false;
+        throw e;
       } finally {
         this.isLoading = false;
       }

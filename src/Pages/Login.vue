@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useAuthStore } from '../store/auth';
-import { ref, watch, onBeforeMount } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { routesName } from '../router';
 import LoginForm from '../components/Login/LoginForm.vue';
 import TestProfiles from '../components/Login/TestProfiles.vue';
+import { routesName } from '../router';
+import { useAuthStore } from '../store/auth';
 
 const authStore = useAuthStore();
 const login = ref('');
@@ -18,7 +18,7 @@ watch(
     if (isAuth) {
       router.push(routesName.helpRequests);
     }
-  }
+  },
 );
 function handleClickDataAuth(dataAuth: { login: string; password: string }) {
   if (!dataAuth.login || !dataAuth.password) return;
@@ -35,7 +35,6 @@ function handleClickDataAuth(dataAuth: { login: string; password: string }) {
         <TestProfiles @dataAuth="handleClickDataAuth" />
       </v-row>
     </v-container>
-    <div v-if="authStore.isError" class="error">Error</div>
   </div>
 </template>
 

@@ -8,5 +8,7 @@ export async function sendDonation(id: string) {
   if (!token) return;
   try {
     await api.contributeToRequest(id, token);
-  } catch (e) {}
+  } catch (e) {
+    throw e;
+  }
 }
