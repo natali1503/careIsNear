@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+
 const props = defineProps<{
   type?: 'row' | 'column';
   title?: string;
   data: { subtitle?: string; description?: string }[];
 }>();
+const display = useDisplay();
 </script>
 <template>
   <div style="display: flex; flex-direction: column; gap: 10px">
     <div v-if="title" class="blockTitle">
-      <h6 class="title">{{ title }}</h6>
+      <h6 class="title" :style="{ fontSize: display.mobile.value ? '18px' : '20px' }">{{ title }}</h6>
     </div>
     <div :style="{ display: 'flex', flexDirection: type, gap: '4px', 'justify-content': 'space-between' }">
       <div
@@ -27,7 +30,6 @@ const props = defineProps<{
 </template>
 <style scoped>
 .title {
-  font-size: 20px;
   font-weight: 500;
 }
 .subtitle {

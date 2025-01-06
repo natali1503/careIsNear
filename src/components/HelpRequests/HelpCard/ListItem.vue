@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 
 import FavoriteButton from '@/components/FavoriteButton.vue';
 import { dateFormatting } from '@/general/dateFormatting';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 import DataCell from '../DataCell.vue';
 import DonationStatusCard from './DetailedHelpCard/element/DonationStatusCard.vue';
 
@@ -14,13 +15,16 @@ const router = useRouter();
 function handleClick() {
   router.push({ name: routesName.helpRequestDetails, params: { id: props.helpRequestDataIteam.id } });
 }
+const display = useDisplay();
 </script>
 <template>
   <v-container @click="handleClick" class="listItem">
     <v-row style="margin: 0; margin-bottom: 30px; margin-top: 20px">
       <!-- padding: 20px 50px -->
       <v-col style="padding: 0">
-        <h5 class="title">{{ helpRequestDataIteam.title.split(' ').slice(1).join(' ') }}</h5>
+        <h5 class="title" :style="{ fontSize: display.mobile.value ? '20px' : '24px' }">
+          {{ helpRequestDataIteam.title.split(' ').slice(1).join(' ') }}
+        </h5>
       </v-col>
       <v-col style="padding: 0; margin-left: 30px">
         <DataCell title="Организатор" :data="[{ description: helpRequestDataIteam.organization.title }]" />
@@ -59,7 +63,7 @@ function handleClick() {
 </template>
 <style scoped>
 .title {
-  font-size: 24px;
+  /* font-size: 24px; */
   font-weight: 400;
   min-height: 145px;
 }

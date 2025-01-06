@@ -32,6 +32,9 @@ const vuetify = createVuetify({
     },
   },
 
+  display: {
+    mobileBreakpoint: 'md',
+  },
   icons: {
     defaultSet: 'mdi',
 

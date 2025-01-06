@@ -1,6 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+const display = useDisplay();
+</script>
 <template>
-  <div style="display: flex; width: 100%; justify-content: center; margin-left: 50px; margin-right: 50px">
+  <div
+    :style="{ margin: display.mobile.value ? 0 : '0 50px', display: 'flex', width: '100%', justifyContent: 'center' }"
+  >
     <div style="display: flex; width: 100%; justify-content: center">
       <slot></slot>
     </div>

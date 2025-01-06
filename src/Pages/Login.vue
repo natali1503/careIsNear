@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import TestProfilesMobile from '@/components/Login/TestProfilesMobile.vue';
 import { onBeforeMount, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 import LoginForm from '../components/Login/LoginForm.vue';
 import TestProfiles from '../components/Login/TestProfiles.vue';
 import { routesName } from '../router';
@@ -25,14 +27,21 @@ function handleClickDataAuth(dataAuth: { login: string; password: string }) {
   login.value = dataAuth.login;
   password.value = dataAuth.password;
 }
+const display = useDisplay();
+console.log(display.thresholds);
 </script>
 
 <template>
   <div class="main">
     <v-container style="width: 100%; padding: 0">
-      <v-row style="flex-wrap: nowrap; height: 100%; margin: 0">
+      <v-row
+        style="flex-wrap: nowrap; height: 100%; margin: 0"
+        :style="{ flexDirection: display.mobile.value ? 'column' : 'row' }"
+      >
         <LoginForm v-model:login="login" v-model:password="password" />
-        <TestProfiles @dataAuth="handleClickDataAuth" />
+        <v-divider :vertical="!display.mobile.value"></v-divider>
+        <TestProfiles @dataAuth="handleClickDataAuth" v-if="!display.mobile.value" />
+        <TestProfilesMobile @dataAuth="handleClickDataAuth" v-if="display.mobile.value" />
       </v-row>
     </v-container>
   </div>

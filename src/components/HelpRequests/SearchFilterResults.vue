@@ -25,7 +25,9 @@ const helpRequestDataForPage = computed(() =>
 <template>
   <div style="background-color: #fff; border-radius: 4px; border: 1px solid #e0e0e0; width: 100%; padding: 10px 30px">
     <v-row style="margin: 0; padding: 0; justify-content: space-between; margin-bottom: 20px">
-      <p>Найдено: {{ new Intl.NumberFormat('ru-RU', { style: 'decimal' }).format(totalRequests) }}</p>
+      <p style="font-size: 20px; font-weight: 500">
+        Найдено: {{ new Intl.NumberFormat('ru-RU', { style: 'decimal' }).format(totalRequests) }}
+      </p>
       <ViewSwitchPanel @updateViewMode="onHandleUpdateViewMode" />
     </v-row>
     <ViewRequests :selectedViewMode="selectedViewMode" :helpRequestDataForPage="helpRequestDataForPage" />

@@ -3,11 +3,13 @@ import { HelpRequestData } from '@/api/generated';
 
 import FavoriteButton from '@/components/FavoriteButton.vue';
 import { dateFormatting } from '@/general/dateFormatting';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 import DataCell from '../../DataCell.vue';
 import ActionsSchedule from './element/ActionsSchedule.vue';
 import VerifiedOrganization from './element/VerifiedOrganization.vue';
 
 const props = defineProps<{ dataDetailedHelp: HelpRequestData; isFavourites: boolean }>();
+const display = useDisplay();
 </script>
 <template>
   <div class="detailedHelp">
@@ -49,7 +51,7 @@ const props = defineProps<{ dataDetailedHelp: HelpRequestData; isFavourites: boo
           { subtitle: 'E-mail: ', description: dataDetailedHelp.contacts.email },
           { subtitle: 'Сайт: ', description: dataDetailedHelp.contacts.website },
         ]"
-        type="row"
+        :type="display.mdAndDown.value ? 'column' : 'row'"
       />
     </div>
   </div>

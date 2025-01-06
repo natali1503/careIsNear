@@ -11,7 +11,7 @@ const props = defineProps<{ dataAuth: IDataAuthUser }>();
       </v-col>
       <v-col cols="10" style="padding: 0px">
         <v-row style="margin: 0; margin-bottom: 4px">
-          <p>{{ dataAuth.title }}</p>
+          <p style="font-weight: 500">{{ dataAuth.title }}</p>
         </v-row>
         <v-row style="margin: 0">
           <p>Логин: {{ dataAuth.login }}</p>
@@ -28,7 +28,7 @@ const props = defineProps<{ dataAuth: IDataAuthUser }>();
   cursor: pointer;
   border: 1px solid #0288d1;
   border-radius: 4px;
-  padding: 6px 16px;
+  padding: 14px 16px;
 }
 .userIteam:hover {
   background-color: rgba(245, 245, 245, 0.4);
