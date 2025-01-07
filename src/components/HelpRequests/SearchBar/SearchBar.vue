@@ -1,4 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const props = defineProps<{ modelValue: string }>();
+const emit = defineEmits(['update:modelValue']);
+
+function handleInputChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  emit('update:modelValue', target.value);
+}
+</script>
 <template>
   <div
     style="
@@ -22,6 +32,8 @@
         placeholder="Введите название задачи или организации"
         variant="underlined"
         :prepend-inner-icon="'mdi-magnify'"
+        :model-value="modelValue"
+        @input="handleInputChange"
       />
     </div>
   </div>

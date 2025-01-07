@@ -18,7 +18,7 @@ watch(
   () => authStore.isAuth,
   (isAuth, oldValue) => {
     if (isAuth) {
-      router.push(routesName.helpRequests);
+      router.push({ name: routesName.helpRequests, query: { page: 1 } });
     }
   },
 );

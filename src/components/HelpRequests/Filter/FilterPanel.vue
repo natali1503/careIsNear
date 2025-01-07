@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { filterOptions } from '@/general/filterOptions';
+import Accordion from './Accordion.vue';
+import CheckListItem from './CheckListItem.vue';
+</script>
 <template>
   <div
     style="
@@ -13,9 +17,35 @@
       height: max-content;
     "
   >
-    <div>
-      <p class="title">Фильтрация</p>
-    </div>
+    <v-expansion-panels style="width: 100%; padding: 0">
+      <v-expansion-panel>
+        <v-expansion-panel-title class="title"> Фильтрация </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <div style="display: flex; flex-direction: column; gap: 40px">
+            <div style="display: flex; flex-direction: column; gap: 20px">
+              <div v-for="filterOption in filterOptions" class="filter">
+                <CheckListItem
+                  v-if="filterOption.type === 'checkList'"
+                  :title="filterOption.title"
+                  :options="filterOption.options"
+                />
+                <Accordion
+                  v-if="filterOption.type === 'accordionList'"
+                  :accordionTitle="filterOption.accordion.accordionTitle"
+                  :items="filterOption.accordion.items"
+                />
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <p>Помощь актуальна до:</p>
+                <v-date-input label="Выберете дату"></v-date-input>
+              </div>
+            </div>
+            <v-btn class="btn">Сбросить</v-btn>
+          </div>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+    </v-expansion-panels>
     <div></div>
   </div>
 </template>
@@ -24,5 +54,12 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 32px;
+}
+::v-deep(.v-expansion-panel__shadow) {
+  box-shadow: none;
+}
+.btn {
+  border: 1px solid rgba(0, 0, 0, 0.87);
+  box-shadow: none;
 }
 </style>

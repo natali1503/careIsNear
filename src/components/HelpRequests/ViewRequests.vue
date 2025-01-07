@@ -18,7 +18,7 @@ const helpRequests = useHelpRequests();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
 const isLoading = computed(() => helpRequests.isLoading || favouritesRequestsHelp.isLoading);
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
-const totalRequests = computed(() => (helpRequests.isData ? helpRequests.data.length : 0));
+const totalRequests = computed(() => (helpRequests.isData ? props.helpRequestDataForPage.length : 0));
 </script>
 <template>
   <v-row style="margin: 0; padding: 0">

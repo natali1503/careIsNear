@@ -1,8 +1,8 @@
-import 'vuetify/lib/styles/main.css';
-// Импорт стилей
-import { createVuetify } from 'vuetify'; // Создание экземпляра Vuetify
+import { createVuetify } from 'vuetify';
+import { VDateInput } from 'vuetify/labs/VDateInput';
 import { mdi } from 'vuetify/lib/iconsets/mdi.mjs';
-// Иконки Material Design Icons
+import 'vuetify/lib/styles/main.css';
+
 const customTheme = {
   dark: false, // Укажите `true` для темной темы
   colors: {
@@ -17,6 +17,14 @@ const customTheme = {
 };
 
 const vuetify = createVuetify({
+  defaults: {
+    global: {
+      experimental: {
+        // Включение экспериментальных компонентов
+        labs: true,
+      },
+    },
+  },
   theme: {
     defaultTheme: 'customTheme',
     themes: {
@@ -31,9 +39,11 @@ const vuetify = createVuetify({
       // },
     },
   },
-
   display: {
     mobileBreakpoint: 'md',
+  },
+  components: {
+    VDateInput,
   },
   icons: {
     defaultSet: 'mdi',

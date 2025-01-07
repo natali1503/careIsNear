@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { GetApiRequestResponse } from '@/api/generated/types.gen';
 import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import Pagination from './Pagination.vue';
 import ViewRequests from './ViewRequests.vue';
 import ViewSwitchPanel from './ViewSwitchPanel.vue';
@@ -10,14 +11,20 @@ const props = defineProps<{
   helpRequestData: GetApiRequestResponse;
   isError: boolean;
 }>();
+const route = useRoute();
 const selectedViewMode = ref(1);
-const currentPage = ref(1);
+const router = useRouter();
+const currentPage = ref(Number(route.query.page) || 1);
 function onHandleUpdateViewMode(updateViewMode) {
   selectedViewMode.value = updateViewMode;
 }
+
 function onHandleChengeCurrentPage(newCurrentPage) {
   currentPage.value = newCurrentPage;
+  const currentQuery = { ...router.currentRoute.value.query };
+  router.replace({ query: { ...currentQuery, page: String(newCurrentPage) } });
 }
+
 const helpRequestDataForPage = computed(() =>
   props.helpRequestData.slice(currentPage.value - 1, currentPage.value + 2),
 );
@@ -36,7 +43,7 @@ const helpRequestDataForPage = computed(() =>
         :currentPage="currentPage"
         :totalRequests="totalRequests"
         @changeCurrentPage="onHandleChengeCurrentPage"
-        v-if="!isError"
+        v-if="!isError && helpRequestDataForPage.length > 0"
       />
     </v-row>
   </div>
