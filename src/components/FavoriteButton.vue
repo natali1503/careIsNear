@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { apiMessages } from '@/api/apiMessages';
+import { useAuthStore } from '@/store/auth';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { useToast } from 'vue-toastification';
 
@@ -22,7 +23,11 @@ async function handleClick(e) {
     }
   } catch (codeError) {
     if (codeError === 500) toast.error(apiMessages.generalError);
-    else toast.error('Что-то еще');
+    else if (codeError === 403) {
+      const authStore = useAuthStore();
+      authStore.logout();
+      toast.error(apiMessages.sessionTime);
+    } else toast.error('Что-то еще');
   }
 }
 </script>

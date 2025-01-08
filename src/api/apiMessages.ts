@@ -10,4 +10,5 @@ export const apiMessages = {
     success: 'Успех! Спасибо за помощь',
   },
   generalError: 'Ошибка! Попробуйте еще раз',
+  sessionTime: 'Время сессии истекло',
 };

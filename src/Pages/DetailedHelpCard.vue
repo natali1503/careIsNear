@@ -6,6 +6,7 @@ import { apiMessages } from '@/api/apiMessages';
 import DetailedHelp from '@/components/HelpRequests/HelpCard/DetailedHelpCard/DetailedHelp.vue';
 import DonationCard from '@/components/HelpRequests/HelpCard/DetailedHelpCard/DonationCard.vue';
 import NoDataError from '@/components/NoDataError.vue';
+import { useAuthStore } from '@/store/auth';
 import { useDetailedHelpRequests } from '@/store/detailedHelpRequests';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { useToast } from 'vue-toastification';
@@ -23,7 +24,11 @@ onBeforeMount(async () => {
   } catch (codeError) {
     const toast = useToast();
     if (codeError === 500) toast.error(apiMessages.generalError);
-    else toast.error('Что-то еще');
+    else if (codeError === 403) {
+      const authStore = useAuthStore();
+      authStore.logout();
+      toast.error(apiMessages.sessionTime);
+    } else toast.error('Что-то еще');
   }
 });
 const isLoading = computed(() => detailedHelpRequests.isLoading);

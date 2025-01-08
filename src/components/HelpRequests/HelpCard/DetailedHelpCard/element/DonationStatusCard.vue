@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { apiMessages } from '@/api/apiMessages';
 import { sendDonation } from '@/general/sendDonation';
+import { useAuthStore } from '@/store/auth';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
@@ -26,7 +27,11 @@ async function onHandleClick() {
       toast.success(apiMessages.contributeToRequest.success);
     } catch (codeError) {
       if (codeError === 500) toast.error(apiMessages.generalError);
-      else toast.error('Что-то еще');
+      else if (codeError === 403) {
+        const authStore = useAuthStore();
+        authStore.logout();
+        toast.error(apiMessages.sessionTime);
+      } else toast.error('Что-то еще');
     }
   }
 }

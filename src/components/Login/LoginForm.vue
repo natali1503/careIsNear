@@ -17,7 +17,10 @@ async function onHandleAuthorization(_) {
     const toast = useToast();
     if (codeError === 500) toast.error(apiMessages.auth.error[codeError]);
     else if (codeError === 400) toast.error(apiMessages.auth.error[codeError]);
-    else toast.error('Что-то еще');
+    else if (codeError === 403) {
+      authStore.logout();
+      toast.error(apiMessages.sessionTime);
+    } else toast.error('Что-то еще');
   }
 }
 

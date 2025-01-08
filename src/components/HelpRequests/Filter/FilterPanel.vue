@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { filterOptions } from '@/general/filterOptions';
+import { filterOptions, IFilterOptions } from '@/general/filterOptions';
 import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
+
+const prop = defineProps<{ filterPanelStatus: IFilterOptions }>();
+const emit = defineEmits(['updateFilter']);
 </script>
 <template>
   <div
@@ -27,7 +30,14 @@ import CheckListItem from './CheckListItem.vue';
                 <CheckListItem
                   v-if="filterOption.type === 'checkList'"
                   :title="filterOption.title"
+                  :titleId="filterOption.id"
                   :options="filterOption.options"
+                  :filterPanelStatus="filterPanelStatus[filterOption.id]"
+                  @checkbox="
+                    (value) => {
+                      emit('updateFilter', { [filterOption.id]: value });
+                    }
+                  "
                 />
                 <Accordion
                   v-if="filterOption.type === 'accordionList'"
