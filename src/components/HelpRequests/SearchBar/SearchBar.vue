@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 
 const props = defineProps<{ modelValue: string }>();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'resetSearchQuery']);
 
 function handleInputChange(event: Event) {
   const target = event.target as HTMLInputElement;
@@ -34,6 +34,8 @@ function handleInputChange(event: Event) {
         :prepend-inner-icon="'mdi-magnify'"
         :model-value="modelValue"
         @input="handleInputChange"
+        :append-inner-icon="modelValue && 'mdi-close-circle'"
+        @click:append-inner="emit('resetSearchQuery')"
       />
     </div>
   </div>
