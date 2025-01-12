@@ -1,3 +1,6 @@
 import { ref } from 'vue';
 
-export const selectedFilters = ref<{ [key: string]: string[] } | {}>({});
+export type SingleObject = { [key: string]: string[] };
+export type NestedObject = { [key: string]: SingleObject };
+
+export const selectedFilters = ref<SingleObject | NestedObject>({});

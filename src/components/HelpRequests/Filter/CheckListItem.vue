@@ -13,14 +13,6 @@ const emit = defineEmits(['checkbox']);
 function onChange() {
   // option.id;
 }
-
-watch(
-  () => selectedFilters.value,
-  () => {
-    console.log(selectedFilters.value);
-  },
-  { deep: true },
-);
 </script>
 <template>
   <div>

@@ -25,7 +25,7 @@ export const filterOptions = [
         {
           title: 'Специализация',
           type: 'checkList',
-          ids: 'qualification',
+          id: 'qualification',
           options: [
             { label: 'Квалифицированная', id: 'professional' },
             { label: 'Не требует профессии', id: 'common' },
@@ -34,16 +34,16 @@ export const filterOptions = [
         {
           title: 'Формат',
           type: 'checkList',
-          ids: 'isOnline',
+          id: 'isOnline',
           options: [
-            { label: 'Онлайн', id: 'true' },
-            { label: 'Офлайн', id: 'false' },
+            { label: 'Онлайн', id: 'online' },
+            { label: 'Офлайн', id: 'offline' },
           ],
         },
         {
           title: 'Необходимо волонтеров',
           type: 'checkList',
-          ids: 'helperType',
+          id: 'helperType',
           options: [
             { label: 'Группа', id: 'group' },
             { label: 'Один', id: 'single' },
@@ -57,21 +57,27 @@ export const filterOptions = [
 export interface Iteam {
   title: string;
   type: string;
+  id: string;
   options: { label: string; id: string }[];
 }
 export interface IFilterOptions {
   helpType: { finance: boolean; material: boolean };
   requesterType: { person: boolean; organization: boolean };
-  qualification: { professional: boolean; common: boolean };
-  helperType: { group: boolean; single: boolean };
-  isOnline: boolean | null;
+  helperRequirements: {
+    qualification: { professional: boolean; common: boolean };
+    helperType: { group: boolean; single: boolean };
+    isOnline: { online: boolean; offline: boolean };
+  };
+
   endingDate: string | null;
 }
 export const filterOptionsInit: IFilterOptions = {
   helpType: { finance: false, material: false },
   requesterType: { person: false, organization: false },
-  qualification: { professional: false, common: false },
-  helperType: { group: false, single: false },
-  isOnline: null,
+  helperRequirements: {
+    qualification: { professional: false, common: false },
+    helperType: { group: false, single: false },
+    isOnline: { online: false, offline: false },
+  },
   endingDate: null,
 };

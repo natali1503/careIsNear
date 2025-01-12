@@ -4,7 +4,7 @@ import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
 
 const prop = defineProps<{ filterPanelStatus: IFilterOptions }>();
-const emit = defineEmits(['updateFilter']);
+const emit = defineEmits(['updateFilter', 'resetFilter']);
 </script>
 <template>
   <div
@@ -43,6 +43,12 @@ const emit = defineEmits(['updateFilter']);
                   v-if="filterOption.type === 'accordionList'"
                   :accordionTitle="filterOption.accordion.accordionTitle"
                   :items="filterOption.accordion.items"
+                  :filterPanelStatus="filterPanelStatus"
+                  @checkboxAccordion="
+                    (value) => {
+                      emit('updateFilter', value);
+                    }
+                  "
                 />
               </div>
 
@@ -51,7 +57,7 @@ const emit = defineEmits(['updateFilter']);
                 <v-date-input label="Выберете дату"></v-date-input>
               </div>
             </div>
-            <v-btn class="btn">Сбросить</v-btn>
+            <v-btn class="btn" @click="emit('resetFilter')">Сбросить</v-btn>
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>

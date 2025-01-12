@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import PageTemplate from '@/components/PageTemplate.vue';
+import clonedeep from 'lodash.clonedeep';
 
 import { apiMessages } from '@/api/apiMessages';
-import { GetApiRequestResponse } from '@/api/generated';
 import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
 import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
-import { filterOptionsInit, IFilterOptions } from '@/general/filterOptions';
-import { getDifferences } from '@/general/getDifferences';
+import { filterForParams } from '@/general/filter/filterForParams';
+import { filterOptionsInit } from '@/general/filterOptions';
 import { selectedFilters } from '@/general/selectedFilters';
-import { useSearchAndFilterData } from '@/general/useSearchAndFilterData';
 import { useAuthStore } from '@/store/auth';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { computed, onBeforeMount, ref, watch } from 'vue';
@@ -39,7 +38,7 @@ onBeforeMount(async () => {
 const route = useRoute();
 const router = useRouter();
 const searchQuery = ref(route.query.search || '');
-const filterPanelStatus = ref(filterOptionsInit);
+const filterPanelStatus = ref(clonedeep(filterOptionsInit));
 const dataToDisplay = ref(helpRequests.data);
 
 function handleSearchQueryChange() {
@@ -47,7 +46,7 @@ function handleSearchQueryChange() {
   if (searchQuery.value === '' || searchQuery.value === undefined) {
     delete currentQuery.search;
     router.replace({ query: { ...currentQuery } });
-    return (dataToDisplay.value = helpRequests.data);
+    dataToDisplay.value = helpRequests.data;
   } else {
     router.replace({ query: { ...currentQuery, search: searchQuery.value } });
     dataToDisplay.value = helpRequests.data.filter((helpRequest) => {
@@ -60,16 +59,60 @@ function handleSearchQueryChange() {
   }
 }
 
+function resetFilter() {
+  selectedFilters.value = {};
+  filterPanelStatus.value = clonedeep(filterOptionsInit);
+}
+
 function handleFilterOptionsChange(newFilter) {
-  for (const [key, value] of Object.entries(newFilter)) {
-    if (Object.hasOwn(selectedFilters.value, key)) {
-      if (selectedFilters.value[key].includes(value)) {
-        const currntFilter = selectedFilters.value[key];
-        selectedFilters.value[key] = currntFilter.filter((filter) => filter !== value);
-        if (selectedFilters.value[key].length === 0) delete selectedFilters.value[key];
-      } else selectedFilters.value[key].push(value);
+  for (const [newKeyFilter, newValueFilter] of Object.entries(newFilter)) {
+    if (Object.hasOwn(selectedFilters.value, newKeyFilter)) {
+      if (typeof newValueFilter === 'string') {
+        const cuurentFilter = selectedFilters.value[newKeyFilter] as string[];
+        if (cuurentFilter.includes(newValueFilter)) {
+          const updateFilter = cuurentFilter.filter((filter) => filter !== newValueFilter);
+          if (updateFilter.length === 0) {
+            delete selectedFilters.value[newKeyFilter];
+          } else {
+            selectedFilters.value[newKeyFilter] = updateFilter;
+          }
+        } else {
+          cuurentFilter.push(newValueFilter);
+        }
+      } else {
+        const key = Object.keys(newValueFilter)[0];
+        if (Object.hasOwn(selectedFilters.value[newKeyFilter], key)) {
+          const cerrentFilter = selectedFilters.value[newKeyFilter][key] as string[];
+          if (cerrentFilter.includes(newValueFilter[key])) {
+            const updateFilter = cerrentFilter.filter((filter) => filter !== newValueFilter[key]);
+            if (updateFilter.length !== 0) {
+              selectedFilters.value[newKeyFilter] = {
+                ...selectedFilters.value[newKeyFilter],
+                [key]: updateFilter,
+              };
+            } else {
+              delete selectedFilters.value[newKeyFilter][key];
+              if (Object.keys(selectedFilters.value[newKeyFilter]).length !== 0) {
+                console.log(selectedFilters.value[newKeyFilter]);
+              } else {
+                delete selectedFilters.value[newKeyFilter];
+              }
+            }
+          } else selectedFilters.value[newKeyFilter][key].push(newValueFilter[key]);
+        } else {
+          selectedFilters.value[newKeyFilter] = {
+            ...selectedFilters.value[newKeyFilter],
+            [key]: [newValueFilter[key]],
+          };
+        }
+      }
     } else {
-      selectedFilters.value[key] = [value];
+      if (typeof newValueFilter === 'string') {
+        selectedFilters.value[newKeyFilter] = [newValueFilter];
+      } else {
+        const key = Object.keys(newValueFilter)[0];
+        selectedFilters.value[newKeyFilter] = { [key]: [newValueFilter[key]] };
+      }
     }
   }
 }
@@ -85,27 +128,15 @@ watch(
   () => searchQuery.value,
   (newData) => {
     handleSearchQueryChange();
+    if (Object.keys(selectedFilters.value).length)
+      dataToDisplay.value = filterForParams(helpRequests.data, selectedFilters.value);
   },
 );
 watch(
   () => selectedFilters.value,
   () => {
-    const temp = [];
-    for (const [key, values] of Object.entries(selectedFilters.value)) {
-      const filter = helpRequests.data.filter((data) => {
-        if (Object.hasOwn(data, key) && values.includes(data[key])) {
-          return data;
-        }
-      });
-      temp.push(...filter);
-    }
-    console.log(temp);
-    dataToDisplay.value = temp;
-    //   console.log(selectedFilters.value);
-    // const key = Object.keys(selectedFilters.value);
-    // console.log(dataToDisplay.value[0]);
-    // console.log(key[0]);
-    // console.log(dataToDisplay.value[0][key[0]]);
+    if (!Object.keys(selectedFilters.value).length) dataToDisplay.value = helpRequests.data;
+    else dataToDisplay.value = filterForParams(helpRequests.data, selectedFilters.value);
   },
   { deep: true },
 );
@@ -125,6 +156,7 @@ const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.is
       <FilterPanel
         :filterPanelStatus="filterPanelStatus"
         @updateFilter="(newFilter) => handleFilterOptionsChange(newFilter)"
+        @resetFilter="resetFilter()"
       />
     </v-col>
     <v-col style="margin: 0; padding: 0">

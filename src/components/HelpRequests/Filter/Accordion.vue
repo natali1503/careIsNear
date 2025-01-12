@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Iteam } from '@/general/filterOptions';
+import { IFilterOptions, Iteam } from '@/general/filterOptions';
 import CheckListItem from './CheckListItem.vue';
 
-const props = defineProps<{ accordionTitle: string; items: Iteam[] }>();
+const props = defineProps<{ accordionTitle: string; items: Iteam[]; filterPanelStatus: IFilterOptions }>();
+const emit = defineEmits(['checkboxAccordion']);
 </script>
 <template>
   <v-expansion-panels style="width: 100%; padding: 0">
@@ -13,7 +14,25 @@ const props = defineProps<{ accordionTitle: string; items: Iteam[] }>();
       <v-expansion-panel-text style="background-color: rgba(245, 245, 245, 1)">
         <div style="display: flex; flex-direction: column; gap: 20px">
           <div v-for="item in items" class="filter">
-            <CheckListItem v-if="item.type === 'checkList'" :title="item.title" :options="item.options" />
+            <CheckListItem
+              v-if="item.type === 'checkList'"
+              :title="item.title"
+              :options="item.options"
+              :titleId="item.id"
+              :filterPanelStatus="filterPanelStatus.helperRequirements[item.id]"
+              @checkbox="
+                (value) => {
+                  const key = item.id;
+                  if (key === 'isOnline') {
+                    const test = { helperRequirements: { [item.id]: value === 'online' ? true : false } };
+                    emit('checkboxAccordion', test);
+                  } else {
+                    const test = { helperRequirements: { [item.id]: value } };
+                    emit('checkboxAccordion', test);
+                  }
+                }
+              "
+            />
           </div>
         </div>
       </v-expansion-panel-text>
