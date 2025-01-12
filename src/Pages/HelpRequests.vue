@@ -39,17 +39,25 @@ const route = useRoute();
 const router = useRouter();
 const searchQuery = ref(route.query.search || '');
 const filterPanelStatus = ref(clonedeep(filterOptionsInit));
-const dataToDisplay = ref(helpRequests.data);
 
-function handleSearchQueryChange() {
+const dataToDisplay = computed(() => {
+  let tempData = helpRequests.data;
+  if (!searchQuery.value && !Object.keys(selectedFilters.value).length) return helpRequests.data;
+  else {
+    tempData = handleSearchQueryChange(tempData);
+    tempData = filterForParams(tempData, selectedFilters.value);
+  }
+  return tempData;
+});
+function handleSearchQueryChange(data) {
+  let searchData = [...data];
   const currentQuery = { ...router.currentRoute.value.query };
   if (searchQuery.value === '' || searchQuery.value === undefined) {
     delete currentQuery.search;
     router.replace({ query: { ...currentQuery } });
-    dataToDisplay.value = helpRequests.data;
   } else {
     router.replace({ query: { ...currentQuery, search: searchQuery.value } });
-    dataToDisplay.value = helpRequests.data.filter((helpRequest) => {
+    searchData = searchData.filter((helpRequest) => {
       if (
         helpRequest.title.toLocaleLowerCase().includes((searchQuery.value as string).toLowerCase()) ||
         helpRequest.organization.title.toLocaleLowerCase().includes((searchQuery.value as string).toLowerCase())
@@ -57,6 +65,7 @@ function handleSearchQueryChange() {
         return helpRequest;
     });
   }
+  return searchData;
 }
 
 function resetFilter() {
@@ -121,30 +130,6 @@ watch(
   () => router.currentRoute.value.query.search,
   (newData) => {
     searchQuery.value = newData;
-  },
-);
-
-watch(
-  () => searchQuery.value,
-  (newData) => {
-    handleSearchQueryChange();
-    if (Object.keys(selectedFilters.value).length)
-      dataToDisplay.value = filterForParams(helpRequests.data, selectedFilters.value);
-  },
-);
-watch(
-  () => selectedFilters.value,
-  () => {
-    if (!Object.keys(selectedFilters.value).length) dataToDisplay.value = helpRequests.data;
-    else dataToDisplay.value = filterForParams(helpRequests.data, selectedFilters.value);
-  },
-  { deep: true },
-);
-watch(
-  () => helpRequests.data,
-  (newData) => {
-    if (searchQuery.value) handleSearchQueryChange();
-    else dataToDisplay.value = newData;
   },
 );
 
