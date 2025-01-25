@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PageTemplate from '@/components/PageTemplate.vue';
-import clonedeep from 'lodash.clonedeep';
 
 import { apiMessages } from '@/api/apiMessages';
 import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
@@ -15,6 +14,7 @@ import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { useDisplay } from 'vuetify/lib/framework.mjs';
 import { useHelpRequests } from '../store/helpRequests';
 
 const helpRequests = useHelpRequests();
@@ -51,12 +51,17 @@ const dataToDisplay = computed(() => {
   }
   return tempData;
 });
-
+const display = useDisplay();
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
 </script>
 <template>
   <PageTemplate title="Запросы о помощи">
-    <v-col cols="12" md="2" style="margin: 0; padding: 0; padding-right: 20px">
+    <v-col
+      cols="12"
+      md="2"
+      style="margin: 0; padding: 0; height: max-content"
+      :style="{ paddingRight: display.mobile.value ? 0 : '20px' }"
+    >
       <FilterPanel
         :filterPanelStatus="filterPanelStatus"
         @updateFilter="(newFilter) => handleFilterOptionsChange(newFilter)"

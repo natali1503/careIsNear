@@ -1,5 +1,5 @@
 import clonedeep from 'lodash.clonedeep';
-import { ref, watch } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { HelpRequestData } from '../../api/generated';
@@ -10,27 +10,26 @@ export function useFiltering() {
   const filterPanelStatus = ref(clonedeep(filterOptionsInit));
   const router = useRouter();
 
-  function handleFilterOptionsChange(newFilter: SingleObject | NestedObject) {
+  async function handleFilterOptionsChange(newFilter: SingleObject | NestedObject) {
     for (const [newKeyFilter, newValueFilter] of Object.entries(newFilter)) {
       if (selectedFilters.value.hasOwnProperty(newKeyFilter)) {
         if (typeof newValueFilter === 'string') {
           const cuurentFilter = selectedFilters.value[newKeyFilter] as string[];
           if (cuurentFilter.includes(newValueFilter)) {
-            const updateFilter = cuurentFilter.filter((filter) => filter !== newValueFilter);
-            if (updateFilter.length === 0) {
-              delete selectedFilters.value[newKeyFilter];
-            } else {
-              selectedFilters.value[newKeyFilter] = updateFilter;
-            }
+            deleteValueFromFilter({ [newKeyFilter]: newValueFilter }, cuurentFilter);
           } else {
             cuurentFilter.push(newValueFilter);
           }
-        } else {
-          const key = Object.keys(newValueFilter)[0];
+        } else if (typeof newValueFilter === 'object') {
+          // newValueFilter Object
+          const objValueFilter = newValueFilter as { [key: string]: string | boolean };
+          const key = Object.keys(objValueFilter)[0];
+          const valueFilter = objValueFilter[key];
           if (selectedFilters.value[newKeyFilter].hasOwnProperty(key)) {
-            const cerrentFilter = selectedFilters.value[newKeyFilter][key] as string[];
-            if (cerrentFilter.includes(newValueFilter[key])) {
-              const updateFilter = cerrentFilter.filter((filter) => filter !== newValueFilter[key]);
+            //delete
+            const currentFilter: string[] | boolean[] = (selectedFilters.value[newKeyFilter] as SingleObject)[key];
+            if (currentFilter.includes(valueFilter)) {
+              const updateFilter = currentFilter.filter((filter) => filter !== valueFilter);
               if (updateFilter.length !== 0) {
                 selectedFilters.value[newKeyFilter] = {
                   ...selectedFilters.value[newKeyFilter],
@@ -56,17 +55,15 @@ export function useFiltering() {
         addNewFilter(newKeyFilter, newValueFilter);
       }
     }
-    const currentQuery = { ...router.currentRoute.value.query };
-    const newQuery: { [key: string]: string } = {};
-    for (const [key, value] of Object.entries(selectedFilters.value)) {
-      if (typeof key === 'string') {
-        newQuery[key] = value.join(',');
-      }
-    }
-    const test = { ...currentQuery, ...newQuery };
-    console.log(test);
-    router.replace({ query: {} });
-    console.log(router.currentRoute.value.query);
+    // await nextTick();
+    // const currentQuery = { ...router.currentRoute.value.query };
+    // const newQuery: { [key: string]: string } = {};
+    // for (const [key, value] of Object.entries(selectedFilters.value)) {
+    //   if (typeof key === 'string') {
+    //     newQuery[key] = value.join(',');
+    //   }
+    // }
+    // router.replace({ query: { ...currentQuery, ...newQuery } });
   }
 
   function addNewFilter(newKeyFilter: string, newValueFilter: string | { [key: string]: string }) {
@@ -75,6 +72,17 @@ export function useFiltering() {
     } else {
       const key = Object.keys(newValueFilter)[0];
       selectedFilters.value[newKeyFilter] = { [key]: [newValueFilter[key]] };
+    }
+  }
+  function deleteValueFromFilter(paramsToDelete: { [key: string]: string }, cuurentFilter: string[]) {
+    for (let [key, valueToDelete] of Object.entries(paramsToDelete)) {
+      console.log(key, valueToDelete);
+      const updateFilter = cuurentFilter.filter((filter) => filter !== valueToDelete);
+      if (updateFilter.length === 0) {
+        delete selectedFilters.value[key];
+      } else {
+        selectedFilters.value[key] = updateFilter;
+      }
     }
   }
 
@@ -106,29 +114,31 @@ export function useFiltering() {
     filterPanelStatus.value = clonedeep(filterOptionsInit);
   }
   //www.lamoda.ru/c/15/shoes-women/?sitelink=topmenuW&l=4&upper_materials=36014,35259
-  watch(
-    () => selectedFilters.value,
-    () => {
-      console.log(123);
-      // router.replace({ query: { test: 'test' } });
-      // const currentQuery = { ...router.currentRoute.value.query };
-      // const newQuery: { [key: string]: string } = {};
-      // for (const [key, value] of Object.entries(selectedFilters.value)) {
-      //   if (typeof key === 'string') {
-      //     newQuery[key] = value.join(',');
-      //   }
-      // }
-      // router.replace({ query: { ...currentQuery, ...newQuery } });
-      // console.log(router.currentRoute.value.query);
-    },
-    { deep: true },
-  );
+  // watch(
+  //   () => selectedFilters.value,
+  //   async () => {
+  //     console.log(9879);
+  //     await nextTick();
+  //     router.replace({ query: { test: 'test' } });
+  //     // const currentQuery = { ...router.currentRoute.value.query };
+  //     // const newQuery: { [key: string]: string } = {};
+  //     // for (const [key, value] of Object.entries(selectedFilters.value)) {
+  //     //   if (typeof key === 'string') {
+  //     //     newQuery[key] = value.join(',');
+  //     //   }
+  //     // }
+  //     // router.replace({ query: { ...currentQuery, ...newQuery } });
+  //     // console.log(router.currentRoute.value.query);
+  //   },
+  //   { deep: true },
+  // );
 
   return { filterPanelStatus, selectedFilters, handleFilterOptionsChange, filteringDataByParams, resetSelectedFilters };
 }
 
 export type SingleObject = { [key: string]: string[] | boolean[] };
 export type NestedObject = { [key: string]: SingleObject };
+
 interface ISelectedFilters {
   helpType?: string[];
   requesterType?: string[];

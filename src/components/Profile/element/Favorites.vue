@@ -47,7 +47,7 @@ const helpRequestDataForPage = computed(() =>
       :currentPage="currentPage"
       :totalRequests="helpRequestDataForPage.length"
       @changeCurrentPage="onHandleChengeCurrentPage"
-      v-if="!isError"
+      v-if="!isError && helpRequestDataForPage.length"
     />
   </v-row>
 </template>

@@ -22,7 +22,12 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
   >
     <v-expansion-panels style="width: 100%; padding: 0">
       <v-expansion-panel>
-        <v-expansion-panel-title class="title"> Фильтрация </v-expansion-panel-title>
+        <v-expansion-panel-title class="title">
+          Фильтрация
+          <!-- <template v-slot:actions>
+            <v-icon icon="mdi-filter-remove-outline" style="color: rgba(0, 0, 0, 0.6)"> </v-icon>
+          </template> -->
+        </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div style="display: flex; flex-direction: column; gap: 40px">
             <div style="display: flex; flex-direction: column; gap: 20px">
