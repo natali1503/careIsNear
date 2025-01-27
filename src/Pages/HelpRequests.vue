@@ -8,10 +8,9 @@ import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.v
 
 import { useFiltering } from '@/general/filter/useFiltering';
 import { useSearch } from '@/general/filter/useSearch';
-import { filterOptionsInit } from '@/general/filterOptions';
 import { useAuthStore } from '@/store/auth';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
-import { computed, onBeforeMount } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { useDisplay } from 'vuetify/lib/framework.mjs';
@@ -19,7 +18,6 @@ import { useHelpRequests } from '../store/helpRequests';
 
 const helpRequests = useHelpRequests();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
-
 onBeforeMount(async () => {
   try {
     await helpRequests.getHelpRequests();
@@ -49,21 +47,26 @@ const dataToDisplay = computed(() => {
     tempData = handleSearchQueryChange(tempData);
     tempData = filteringDataByParams(tempData);
   }
+
   return tempData;
 });
+
 const display = useDisplay();
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
+const isFilter = computed(() => Object.keys(selectedFilters.value).length > 0);
 </script>
 <template>
   <PageTemplate title="Запросы о помощи">
     <v-col
       cols="12"
-      md="2"
+      md="3"
       style="margin: 0; padding: 0; height: max-content"
       :style="{ paddingRight: display.mobile.value ? 0 : '20px' }"
     >
       <FilterPanel
         :filterPanelStatus="filterPanelStatus"
+        :isFilter="isFilter"
+        :mobile="display.mobile.value"
         @updateFilter="(newFilter) => handleFilterOptionsChange(newFilter)"
         @resetFilter="resetSelectedFilters()"
       />

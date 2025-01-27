@@ -9,20 +9,31 @@ export function useSearch(initValueSearch: string) {
 
   watch(
     () => router.currentRoute.value.query.search,
-    (newSearchQuery) => {
-      if (typeof newSearchQuery === 'string') searchQuery.value = newSearchQuery;
+    (routerSearchQuery) => {
+      if (typeof routerSearchQuery === 'string') searchQuery.value = routerSearchQuery;
+      else searchQuery.value = '';
     },
   );
+  watch(
+    () => searchQuery.value,
+    (newSearchQuery) => {
+      if (newSearchQuery === '') {
+        removeParamFromCurrentRoute('search');
+      } else {
+        const currentQuery = { ...router.currentRoute.value.query };
+        router.replace({ query: { ...currentQuery, search: searchQuery.value } });
+      }
+    },
+  );
+  function removeParamFromCurrentRoute(param: string) {
+    const currentQuery = { ...router.currentRoute.value.query };
+    if (currentQuery.hasOwnProperty(param)) delete currentQuery.search;
+    router.replace({ query: { ...currentQuery } });
+  }
 
   function handleSearchQueryChange(dataToSearch: HelpRequestData[]) {
     let searchData = [...dataToSearch];
-    const currentQuery = { ...router.currentRoute.value.query };
-    if (!searchQuery.value) {
-      delete currentQuery.search;
-
-      router.replace({ query: { ...currentQuery } });
-    } else {
-      router.replace({ query: { ...currentQuery, search: searchQuery.value } });
+    if (searchQuery.value) {
       searchData = searchData.filter((helpRequest) => {
         const lowercasedSearchQuery = searchQuery.value.toLocaleLowerCase();
         if (

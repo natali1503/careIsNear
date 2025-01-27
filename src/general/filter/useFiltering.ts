@@ -3,85 +3,51 @@ import { nextTick, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { HelpRequestData } from '../../api/generated';
-import { filterOptionsInit } from '../filterOptions';
+import { filterOptionsArray, filterOptionsInit } from '../filterOptions';
 
 export function useFiltering() {
-  const selectedFilters = ref<SingleObject | NestedObject>({});
+  const selectedFilters = ref<NestedObj>({});
   const filterPanelStatus = ref(clonedeep(filterOptionsInit));
   const router = useRouter();
 
   async function handleFilterOptionsChange(newFilter: SingleObject | NestedObject) {
     for (const [newKeyFilter, newValueFilter] of Object.entries(newFilter)) {
+      // Проверяем, есть ли ключ в selectedFilters
       if (selectedFilters.value.hasOwnProperty(newKeyFilter)) {
-        if (typeof newValueFilter === 'string') {
-          const cuurentFilter = selectedFilters.value[newKeyFilter] as string[];
+        // Обработка строкового фильтра
+        if (typeof newValueFilter === 'string' || typeof newValueFilter === 'boolean') {
+          const cuurentFilter = selectedFilters.value[newKeyFilter] as string[] | boolean[];
           if (cuurentFilter.includes(newValueFilter)) {
-            deleteValueFromFilter({ [newKeyFilter]: newValueFilter }, cuurentFilter);
+            selectedFilters.value = deleteFilterTwo(
+              { [newKeyFilter]: newValueFilter },
+              clonedeep(selectedFilters.value),
+            );
           } else {
-            cuurentFilter.push(newValueFilter);
+            addNewFilterTwo({ [newKeyFilter]: newValueFilter }, selectedFilters.value);
           }
-        } else if (typeof newValueFilter === 'object') {
-          // newValueFilter Object
-          const objValueFilter = newValueFilter as { [key: string]: string | boolean };
-          const key = Object.keys(objValueFilter)[0];
-          const valueFilter = objValueFilter[key];
-          if (selectedFilters.value[newKeyFilter].hasOwnProperty(key)) {
-            //delete
-            const currentFilter: string[] | boolean[] = (selectedFilters.value[newKeyFilter] as SingleObject)[key];
-            if (currentFilter.includes(valueFilter)) {
-              const updateFilter = currentFilter.filter((filter) => filter !== valueFilter);
-              if (updateFilter.length !== 0) {
-                selectedFilters.value[newKeyFilter] = {
-                  ...selectedFilters.value[newKeyFilter],
-                  [key]: updateFilter,
-                };
-              } else {
-                delete selectedFilters.value[newKeyFilter][key];
-                if (Object.keys(selectedFilters.value[newKeyFilter]).length !== 0) {
-                  console.log(selectedFilters.value[newKeyFilter]);
-                } else {
-                  delete selectedFilters.value[newKeyFilter];
-                }
-              }
-            } else selectedFilters.value[newKeyFilter][key].push(newValueFilter[key]);
+        }
+        // Обработка вложенного фильтра
+        else if (typeof newValueFilter === 'object') {
+          const nestedValueFilter = newValueFilter as { [key: string]: string | boolean };
+          const key = Object.keys(nestedValueFilter)[0];
+          const valueFilter = nestedValueFilter[key];
+          const currNested = selectedFilters.value[newKeyFilter] as NestedObj;
+          let currNestedValue = currNested[key] as string[] | boolean[];
+          if (currNestedValue && currNestedValue.includes(valueFilter)) {
+            selectedFilters.value = deleteFilterTwo(
+              { [newKeyFilter]: newValueFilter },
+              clonedeep(selectedFilters.value),
+            );
           } else {
-            selectedFilters.value[newKeyFilter] = {
-              ...selectedFilters.value[newKeyFilter],
-              [key]: [newValueFilter[key]],
-            };
+            selectedFilters.value = addNewFilterTwo(
+              { [newKeyFilter]: newValueFilter },
+              clonedeep(selectedFilters.value),
+            );
           }
         }
       } else {
-        addNewFilter(newKeyFilter, newValueFilter);
-      }
-    }
-    // await nextTick();
-    // const currentQuery = { ...router.currentRoute.value.query };
-    // const newQuery: { [key: string]: string } = {};
-    // for (const [key, value] of Object.entries(selectedFilters.value)) {
-    //   if (typeof key === 'string') {
-    //     newQuery[key] = value.join(',');
-    //   }
-    // }
-    // router.replace({ query: { ...currentQuery, ...newQuery } });
-  }
-
-  function addNewFilter(newKeyFilter: string, newValueFilter: string | { [key: string]: string }) {
-    if (typeof newValueFilter === 'string') {
-      selectedFilters.value[newKeyFilter] = [newValueFilter];
-    } else {
-      const key = Object.keys(newValueFilter)[0];
-      selectedFilters.value[newKeyFilter] = { [key]: [newValueFilter[key]] };
-    }
-  }
-  function deleteValueFromFilter(paramsToDelete: { [key: string]: string }, cuurentFilter: string[]) {
-    for (let [key, valueToDelete] of Object.entries(paramsToDelete)) {
-      console.log(key, valueToDelete);
-      const updateFilter = cuurentFilter.filter((filter) => filter !== valueToDelete);
-      if (updateFilter.length === 0) {
-        delete selectedFilters.value[key];
-      } else {
-        selectedFilters.value[key] = updateFilter;
+        // Если ключа нет, добавляем новый фильтр
+        selectedFilters.value = addNewFilterTwo({ [newKeyFilter]: newValueFilter }, clonedeep(selectedFilters.value));
       }
     }
   }
@@ -91,7 +57,11 @@ export function useFiltering() {
       return Object.entries(selectedFilters.value).every(([key, values]) => {
         if (Array.isArray(values)) {
           if (key in requestHelp) {
-            return values.includes(requestHelp[key]);
+            if (key === 'endingDate') {
+              const dateMsFilter = Number(values[0]);
+              const dateMsRequestHelp = new Date(requestHelp?.endingDate).getTime();
+              if (dateMsFilter - dateMsRequestHelp > 0) return true;
+            } else return values.includes(requestHelp[key]);
           }
           return false;
         } else {
@@ -109,29 +79,50 @@ export function useFiltering() {
     });
   }
 
-  function resetSelectedFilters(): void {
+  async function updateQueryRouter() {
+    await nextTick();
+    const currentQuery = { ...router.currentRoute.value.query };
+    const newQuery: { [key: string]: string } = {};
+    const flatCurrentFilter: { [key: string]: string[] | boolean[] } = {};
+    for (const [key, value] of Object.entries(selectedFilters.value)) {
+      if (Array.isArray(value)) flatCurrentFilter[key] = value;
+      else {
+        for (const [keyNested, valueNested] of Object.entries(value)) {
+          if (Array.isArray(valueNested)) flatCurrentFilter[keyNested] = valueNested;
+        }
+      }
+    }
+    for (let filter of filterOptionsArray) {
+      if (filter in flatCurrentFilter) {
+        newQuery[filter] = flatCurrentFilter[filter];
+      } else delete currentQuery[filter];
+    }
+
+    for (const [key, value] of Object.entries(selectedFilters.value)) {
+      if (Array.isArray(value)) {
+        newQuery[key] = value.join(',');
+      } else {
+        for (const [keyNested, valueNested] of Object.entries(value)) {
+          if (Array.isArray(valueNested)) {
+            newQuery[keyNested] = valueNested.join(',');
+          }
+        }
+      }
+    }
+    router.replace({ query: { ...currentQuery, ...newQuery } });
+  }
+
+  async function resetSelectedFilters(): Promise<void> {
     selectedFilters.value = {};
     filterPanelStatus.value = clonedeep(filterOptionsInit);
   }
-  //www.lamoda.ru/c/15/shoes-women/?sitelink=topmenuW&l=4&upper_materials=36014,35259
-  // watch(
-  //   () => selectedFilters.value,
-  //   async () => {
-  //     console.log(9879);
-  //     await nextTick();
-  //     router.replace({ query: { test: 'test' } });
-  //     // const currentQuery = { ...router.currentRoute.value.query };
-  //     // const newQuery: { [key: string]: string } = {};
-  //     // for (const [key, value] of Object.entries(selectedFilters.value)) {
-  //     //   if (typeof key === 'string') {
-  //     //     newQuery[key] = value.join(',');
-  //     //   }
-  //     // }
-  //     // router.replace({ query: { ...currentQuery, ...newQuery } });
-  //     // console.log(router.currentRoute.value.query);
-  //   },
-  //   { deep: true },
-  // );
+  watch(
+    () => selectedFilters.value,
+    async () => {
+      updateQueryRouter();
+    },
+    { deep: true },
+  );
 
   return { filterPanelStatus, selectedFilters, handleFilterOptionsChange, filteringDataByParams, resetSelectedFilters };
 }
@@ -148,83 +139,62 @@ interface ISelectedFilters {
     isOnline?: boolean[];
   };
 }
+export type SingleObjectFilter = { [key: string]: string | boolean };
+export type NestedObjectFilter = { [key: string]: SingleObject };
 
-// interface SingleObject {
-//   [key: string]: string | string[];
-// }
+type NestedObj = {
+  [key: string]: string[] | boolean[] | NestedObj;
+};
+function addNewFilterTwo(newParams: SingleObjectFilter | NestedObjectFilter, currentFilter: NestedObj) {
+  const key = Object.keys(newParams)[0];
+  const valueFilter = Object.values(newParams)[0];
+  if (typeof valueFilter === 'string') {
+    if (currentFilter.hasOwnProperty(key)) {
+      const currentFilterValue = currentFilter[key] as string[];
+      currentFilter[key] = [...currentFilterValue, valueFilter];
+    } else currentFilter[key] = [valueFilter];
+  } else if (typeof valueFilter === 'boolean') {
+    if (currentFilter.hasOwnProperty(key)) {
+      const currentFilterValue = currentFilter[key] as boolean[];
+      currentFilter[key] = [...currentFilterValue, valueFilter];
+    } else currentFilter[key] = [valueFilter];
+  } else if (typeof valueFilter === 'object' && !Array.isArray(valueFilter)) {
+    const nestedCurrentFilter = currentFilter.hasOwnProperty(key) ? (currentFilter[key] as NestedObj) : {};
+    const nestedFilter = addNewFilterTwo(valueFilter as SingleObjectFilter, { ...nestedCurrentFilter });
+    if (currentFilter.hasOwnProperty(key)) {
+      const currentFilterValue = currentFilter[key];
 
-// interface NestedObject {
-//   [key: string]: Record<string, string[]>;
-// }
+      currentFilter[key] = { ...currentFilterValue, ...nestedFilter };
+    } else currentFilter[key] = nestedFilter;
+  }
+  return currentFilter;
+}
+function deleteFilterTwo(paramsToDelete: SingleObjectFilter | NestedObjectFilter, currentFilter: NestedObj) {
+  const key = Object.keys(paramsToDelete)[0];
+  const valueToDelete = Object.values(paramsToDelete)[0];
 
-// type SelectedFilters = {
-//   [key: string]: string[] | Record<string, string[]>;
-// };
+  if (typeof valueToDelete === 'string') {
+    const cuurentFilterForKey = currentFilter[key] as string[];
+    const updateFilter = cuurentFilterForKey.filter((value) => value !== valueToDelete);
 
-// const selectedFilters = {
-//   value: {} as SelectedFilters,
-// };
+    if (updateFilter.length === 0) {
+      delete currentFilter[key];
+    } else {
+      currentFilter[key] = updateFilter;
+    }
+  } else if (typeof valueToDelete === 'boolean') {
+    const cuurentFilterForKey = currentFilter[key] as boolean[];
+    const updateFilter = cuurentFilterForKey.filter((value) => value !== valueToDelete);
 
-// function handleFilterOptionsChange(newFilter: SingleObject | NestedObject) {
-//   for (const [newKeyFilter, newValueFilter] of Object.entries(newFilter)) {
-//     // Проверяем, есть ли ключ в selectedFilters
-//     if (selectedFilters.value.hasOwnProperty(newKeyFilter)) {
-//       handleExistingFilter(newKeyFilter, newValueFilter);
-//     } else {
-//       // Если ключа нет, добавляем новый фильтр
-//       addNewFilter(newKeyFilter, newValueFilter);
-//     }
-//   }
-// }
-
-// // Обработка существующего фильтра
-// function handleExistingFilter(newKeyFilter: string, newValueFilter: string | Record<string, string[]>) {
-//   if (typeof newValueFilter === 'string') {
-//     updateStringFilter(newKeyFilter, newValueFilter);
-//   } else {
-//     updateNestedFilter(newKeyFilter, newValueFilter);
-//   }
-// }
-
-// // Обработка строкового фильтра
-// function updateStringFilter(newKeyFilter: string, newValueFilter: string) {
-//   const currentFilter = selectedFilters.value[newKeyFilter] as string[];
-
-//   if (currentFilter.includes(newValueFilter)) {
-//     const updatedFilter = currentFilter.filter((filter) => filter !== newValueFilter);
-//     if (updatedFilter.length === 0) {
-//       delete selectedFilters.value[newKeyFilter];
-//     } else {
-//       selectedFilters.value[newKeyFilter] = updatedFilter;
-//     }
-//   } else {
-//     currentFilter.push(newValueFilter);
-//   }
-// }
-
-// // Обработка вложенного фильтра
-// function updateNestedFilter(newKeyFilter: string, newValueFilter: Record<string, string[]>) {
-//   const key = Object.keys(newValueFilter)[0];
-//   if (selectedFilters.value[newKeyFilter]?.hasOwnProperty(key)) {
-//     const currentFilter = selectedFilters.value[newKeyFilter][key] as string[];
-
-//     if (currentFilter.includes(newValueFilter[key])) {
-//       const updatedFilter = currentFilter.filter((filter) => filter !== newValueFilter[key]);
-//       if (updatedFilter.length !== 0) {
-//         selectedFilters.value[newKeyFilter] = {
-//           ...selectedFilters.value[newKeyFilter],
-//           [key]: updatedFilter,
-//         };
-//       } else {
-//         delete selectedFilters.value[newKeyFilter][key];
-//         if (Object.keys(selectedFilters.value[newKeyFilter]).length === 0) {
-//           delete selectedFilters.value[newKeyFilter];
-//         }
-//       }
-//     } else {
-//       selectedFilters.value[newKeyFilter][key].push(newValueFilter[key]);
-//     }
-//   } else {
-//     selectedFilters.value[newKeyFilter] = { [key]: [newValueFilter[key]] };
-//   }
-// }
+    if (updateFilter.length === 0) {
+      delete currentFilter[key];
+    } else {
+      currentFilter[key] = updateFilter;
+    }
+  } else if (typeof valueToDelete === 'object') {
+    const nestedCurrentFilter = currentFilter.hasOwnProperty(key) ? (currentFilter[key] as NestedObj) : {};
+    const nestedFilter = deleteFilterTwo(valueToDelete, { ...nestedCurrentFilter });
+    currentFilter[key] = nestedFilter;
+  }
+  return currentFilter;
+}

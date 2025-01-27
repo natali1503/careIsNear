@@ -3,7 +3,7 @@ import { filterOptions, IFilterOptions } from '@/general/filterOptions';
 import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
 
-const prop = defineProps<{ filterPanelStatus: IFilterOptions }>();
+const prop = defineProps<{ filterPanelStatus: IFilterOptions; isFilter: boolean; mobile: boolean }>();
 const emit = defineEmits(['updateFilter', 'resetFilter']);
 </script>
 <template>
@@ -20,13 +20,13 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
       height: max-content;
     "
   >
-    <v-expansion-panels style="width: 100%; padding: 0">
+    <v-expansion-panels style="width: 100%; padding: 0" :model-value="mobile ? null : 0">
       <v-expansion-panel>
         <v-expansion-panel-title class="title">
           Фильтрация
-          <!-- <template v-slot:actions>
-            <v-icon icon="mdi-filter-remove-outline" style="color: rgba(0, 0, 0, 0.6)"> </v-icon>
-          </template> -->
+          <!-- <template v-slot:actions> -->
+          <!-- <v-icon v-if="isFilter" icon="mdi-filter-remove-outline" style="color: rgba(0, 0, 0, 0.6)"> </v-icon> -->
+          <!-- </template> -->
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div style="display: flex; flex-direction: column; gap: 40px">
@@ -59,10 +59,18 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
 
               <div style="display: flex; flex-direction: column; gap: 10px">
                 <p>Помощь актуальна до:</p>
-                <v-date-input label="Выберете дату"></v-date-input>
+                <v-date-input
+                  label="Выберете дату"
+                  @update:modelValue="
+                    (value) => {
+                      emit('updateFilter', { endingDate: String(new Date(value).getTime()) });
+                    }
+                  "
+                  :append-inner-icon="filterPanelStatus.endingDate && 'mdi-close-circle'"
+                ></v-date-input>
               </div>
             </div>
-            <v-btn class="btn" @click="emit('resetFilter')">Сбросить</v-btn>
+            <v-btn class="btn" @click="emit('resetFilter')" :disabled="!isFilter">Сбросить</v-btn>
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>

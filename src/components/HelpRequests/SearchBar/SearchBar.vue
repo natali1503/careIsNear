@@ -35,7 +35,9 @@ function handleInputChange(event: Event) {
         :model-value="modelValue"
         @input="handleInputChange"
         :append-inner-icon="modelValue && 'mdi-close-circle'"
-        @click:append-inner="emit('resetSearchQuery')"
+        @click:append-inner="()=>{
+  emit('update:modelValue', '');
+          emit('resetSearchQuery')}"
       />
     </div>
   </div>

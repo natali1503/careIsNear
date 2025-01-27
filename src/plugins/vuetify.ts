@@ -2,6 +2,7 @@ import { createVuetify } from 'vuetify';
 import { VDateInput } from 'vuetify/labs/VDateInput';
 import { mdi } from 'vuetify/lib/iconsets/mdi.mjs';
 import 'vuetify/lib/styles/main.css';
+import { ru } from 'vuetify/locale';
 
 const customTheme = {
   dark: false, // Укажите `true` для темной темы
@@ -17,6 +18,10 @@ const customTheme = {
 };
 
 const vuetify = createVuetify({
+  locale: {
+    locale: 'ru',
+    messages: { ru },
+  },
   defaults: {
     global: {
       experimental: {

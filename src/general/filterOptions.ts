@@ -52,6 +52,7 @@ export const filterOptions = [
       ],
     },
   },
+  { type: 'inputDate', title: 'Выберете дату', id: 'endingDate' },
 ];
 
 export interface Iteam {
@@ -81,3 +82,27 @@ export const filterOptionsInit: IFilterOptions = {
   },
   endingDate: null,
 };
+
+enum FilterOptions {
+  helpType,
+  requesterType,
+  qualification,
+  helperType,
+  isOnline,
+  endingDate,
+}
+
+function getEnumValues<T>(enumObj: T): Array<T[keyof T]> {
+  return Object.values(enumObj).filter((value) => typeof value === 'string' || isNaN(Number(value)));
+}
+export const filterOptionsArray = getEnumValues(FilterOptions);
+export interface ISelectedFilters {
+  helpType: string[];
+  requesterType: string[];
+  helperRequirements: {
+    qualification: string[];
+    helperType: string[];
+    isOnline: string[];
+  };
+  endingDate: string | null;
+}
