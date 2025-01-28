@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { IFilterOptions, Iteam } from '@/general/filterOptions';
 import CheckListItem from './CheckListItem.vue';
-
-const props = defineProps<{ accordionTitle: string; items: Iteam[]; filterPanelStatus: IFilterOptions }>();
+import { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
+const props = defineProps<{ accordionTitle: string; items: Iteam[]; filterPanelStatus: TypeFilterOptionsInit }>();
 const emit = defineEmits(['checkboxAccordion']);
 </script>
 <template>
@@ -44,3 +44,7 @@ const emit = defineEmits(['checkboxAccordion']);
   box-shadow: none;
 }
 </style>
+
+const str=''
+console.log(str=='')
+console.log(str=='')

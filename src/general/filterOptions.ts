@@ -1,8 +1,11 @@
+import { FilterOptions } from './filter/FilterOptions';
+import { HelperRequirements } from './filter/HelperRequirements';
+
 export const filterOptions = [
   {
     type: 'checkList',
     title: 'Кому мы помогаем',
-    id: 'requesterType',
+    id: FilterOptions.helpType,
     options: [
       { label: 'Пенсионеры', id: 'person' },
       { label: 'Дома престарелых', id: 'organization' },
@@ -11,7 +14,7 @@ export const filterOptions = [
   {
     type: 'checkList',
     title: 'Чем мы помогаем',
-    id: 'helpType',
+    id: FilterOptions.helpType,
     options: [
       { label: 'Вещи', id: 'material' },
       { label: 'Финансирование', id: 'finance' },
@@ -25,7 +28,7 @@ export const filterOptions = [
         {
           title: 'Специализация',
           type: 'checkList',
-          id: 'qualification',
+          id: HelperRequirements.qualification,
           options: [
             { label: 'Квалифицированная', id: 'professional' },
             { label: 'Не требует профессии', id: 'common' },
@@ -34,7 +37,7 @@ export const filterOptions = [
         {
           title: 'Формат',
           type: 'checkList',
-          id: 'isOnline',
+          id: HelperRequirements.isOnline,
           options: [
             { label: 'Онлайн', id: 'online' },
             { label: 'Офлайн', id: 'offline' },
@@ -43,7 +46,7 @@ export const filterOptions = [
         {
           title: 'Необходимо волонтеров',
           type: 'checkList',
-          id: 'helperType',
+          id: HelperRequirements.helperType,
           options: [
             { label: 'Группа', id: 'group' },
             { label: 'Один', id: 'single' },
@@ -52,7 +55,7 @@ export const filterOptions = [
       ],
     },
   },
-  { type: 'inputDate', title: 'Выберете дату', id: 'endingDate' },
+  { type: 'inputDate', title: 'Выберете дату', id: FilterOptions.endingDate },
 ];
 
 export interface Iteam {
@@ -83,19 +86,10 @@ export const filterOptionsInit: IFilterOptions = {
   endingDate: null,
 };
 
-enum FilterOptions {
-  helpType,
-  requesterType,
-  qualification,
-  helperType,
-  isOnline,
-  endingDate,
-}
-
-function getEnumValues<T>(enumObj: T): Array<T[keyof T]> {
-  return Object.values(enumObj).filter((value) => typeof value === 'string' || isNaN(Number(value)));
-}
-export const filterOptionsArray = getEnumValues(FilterOptions);
+// function getEnumValues<T>(enumObj: T): Array<T[keyof T]> {
+//   return Object.values(enumObj).filter((value) => typeof value === 'string' || isNaN(Number(value)));
+// }
+// export const filterOptionsArray = getEnumValues(FilterOptions);
 export interface ISelectedFilters {
   helpType: string[];
   requesterType: string[];

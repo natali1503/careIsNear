@@ -3,54 +3,16 @@ import { nextTick, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { HelpRequestData } from '../../api/generated';
-import { filterOptionsArray, filterOptionsInit } from '../filterOptions';
+
+import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
+import { FilterOptionsInit, TypeFilterOptionsInit } from './FilterOptionsInit';
+import { HelperRequirements, TypeHelperRequirements } from './HelperRequirements';
+import { selectedFiltersInit, TypeSelectedFilters } from './SelectedFilters';
 
 export function useFiltering() {
-  const selectedFilters = ref<NestedObj>({});
-  const filterPanelStatus = ref(clonedeep(filterOptionsInit));
+  const selectedFilters = ref<TypeSelectedFilters>(clonedeep(selectedFiltersInit));
+  const filterPanelStatus = ref<TypeFilterOptionsInit>(clonedeep(FilterOptionsInit));
   const router = useRouter();
-
-  async function handleFilterOptionsChange(newFilter: SingleObject | NestedObject) {
-    for (const [newKeyFilter, newValueFilter] of Object.entries(newFilter)) {
-      // Проверяем, есть ли ключ в selectedFilters
-      if (selectedFilters.value.hasOwnProperty(newKeyFilter)) {
-        // Обработка строкового фильтра
-        if (typeof newValueFilter === 'string' || typeof newValueFilter === 'boolean') {
-          const cuurentFilter = selectedFilters.value[newKeyFilter] as string[] | boolean[];
-          if (cuurentFilter.includes(newValueFilter)) {
-            selectedFilters.value = deleteFilterTwo(
-              { [newKeyFilter]: newValueFilter },
-              clonedeep(selectedFilters.value),
-            );
-          } else {
-            addNewFilterTwo({ [newKeyFilter]: newValueFilter }, selectedFilters.value);
-          }
-        }
-        // Обработка вложенного фильтра
-        else if (typeof newValueFilter === 'object') {
-          const nestedValueFilter = newValueFilter as { [key: string]: string | boolean };
-          const key = Object.keys(nestedValueFilter)[0];
-          const valueFilter = nestedValueFilter[key];
-          const currNested = selectedFilters.value[newKeyFilter] as NestedObj;
-          let currNestedValue = currNested[key] as string[] | boolean[];
-          if (currNestedValue && currNestedValue.includes(valueFilter)) {
-            selectedFilters.value = deleteFilterTwo(
-              { [newKeyFilter]: newValueFilter },
-              clonedeep(selectedFilters.value),
-            );
-          } else {
-            selectedFilters.value = addNewFilterTwo(
-              { [newKeyFilter]: newValueFilter },
-              clonedeep(selectedFilters.value),
-            );
-          }
-        }
-      } else {
-        // Если ключа нет, добавляем новый фильтр
-        selectedFilters.value = addNewFilterTwo({ [newKeyFilter]: newValueFilter }, clonedeep(selectedFilters.value));
-      }
-    }
-  }
 
   function filteringDataByParams(dataToFiltering: HelpRequestData[]) {
     return dataToFiltering.filter((requestHelp) => {
@@ -79,38 +41,38 @@ export function useFiltering() {
     });
   }
 
-  async function updateQueryRouter() {
-    await nextTick();
-    const currentQuery = { ...router.currentRoute.value.query };
-    const newQuery: { [key: string]: string } = {};
-    const flatCurrentFilter: { [key: string]: string[] | boolean[] } = {};
-    for (const [key, value] of Object.entries(selectedFilters.value)) {
-      if (Array.isArray(value)) flatCurrentFilter[key] = value;
-      else {
-        for (const [keyNested, valueNested] of Object.entries(value)) {
-          if (Array.isArray(valueNested)) flatCurrentFilter[keyNested] = valueNested;
-        }
-      }
-    }
-    for (let filter of filterOptionsArray) {
-      if (filter in flatCurrentFilter) {
-        newQuery[filter] = flatCurrentFilter[filter];
-      } else delete currentQuery[filter];
-    }
+  // async function updateQueryRouter() {
+  //   await nextTick();
+  //   const currentQuery = { ...router.currentRoute.value.query };
+  //   const newQuery: { [key: string]: string } = {};
+  //   const flatCurrentFilter: { [key: string]: string[] | boolean[] } = {};
+  //   for (const [key, value] of Object.entries(selectedFilters.value)) {
+  //     if (Array.isArray(value)) flatCurrentFilter[key] = value;
+  //     else {
+  //       for (const [keyNested, valueNested] of Object.entries(value)) {
+  //         if (Array.isArray(valueNested)) flatCurrentFilter[keyNested] = valueNested;
+  //       }
+  //     }
+  //   }
+  //   for (let filter) {
+  //     if (filter in flatCurrentFilter) {
+  //       newQuery[filter] = flatCurrentFilter[filter];
+  //     } else delete currentQuery[filter];
+  //   }
 
-    for (const [key, value] of Object.entries(selectedFilters.value)) {
-      if (Array.isArray(value)) {
-        newQuery[key] = value.join(',');
-      } else {
-        for (const [keyNested, valueNested] of Object.entries(value)) {
-          if (Array.isArray(valueNested)) {
-            newQuery[keyNested] = valueNested.join(',');
-          }
-        }
-      }
-    }
-    router.replace({ query: { ...currentQuery, ...newQuery } });
-  }
+  //   for (const [key, value] of Object.entries(selectedFilters.value)) {
+  //     if (Array.isArray(value)) {
+  //       newQuery[key] = value.join(',');
+  //     } else {
+  //       for (const [keyNested, valueNested] of Object.entries(value)) {
+  //         if (Array.isArray(valueNested)) {
+  //           newQuery[keyNested] = valueNested.join(',');
+  //         }
+  //       }
+  //     }
+  //   }
+  //   router.replace({ query: { ...currentQuery, ...newQuery } });
+  // }
 
   async function resetSelectedFilters(): Promise<void> {
     selectedFilters.value = {};
@@ -124,7 +86,44 @@ export function useFiltering() {
     { deep: true },
   );
 
-  return { filterPanelStatus, selectedFilters, handleFilterOptionsChange, filteringDataByParams, resetSelectedFilters };
+  function updateSelectedFilters(
+    keyFilter: TypeKeyFilterOptions,
+    newValue: string | boolean | TypeHelperRequirements | Date,
+  ) {
+    const currentValue = selectedFilters.value[keyFilter];
+    if (
+      typeof newValue === 'object' &&
+      !Array.isArray(newValue) &&
+      typeof currentValue === 'object' &&
+      !Array.isArray(currentValue) &&
+      !(newValue instanceof Date) &&
+      !(currentValue instanceof Date) &&
+      currentValue !== null
+    ) {
+      const nestedKey = Object.keys(newValue)[0] as keyof typeof HelperRequirements;
+      const nestedValue = newValue[nestedKey];
+      const test = currentValue[nestedKey];
+      if (typeof nestedValue === 'string') (test as string[]).push(nestedValue);
+      if (typeof nestedValue === 'boolean') (test as boolean[]).push(nestedValue);
+    } else if (Array.isArray(currentValue)) {
+      if (typeof newValue === 'string' || typeof newValue === 'boolean') {
+        (currentValue as Array<string | boolean>).push(newValue);
+      }
+    }
+
+    if (newValue instanceof Date) {
+      selectedFilters.value[FilterOptions.endingDate] = newValue;
+    }
+    console.log(selectedFilters);
+  }
+
+  return {
+    filterPanelStatus,
+    selectedFilters,
+    filteringDataByParams,
+    resetSelectedFilters,
+    updateSelectedFilters,
+  };
 }
 
 export type SingleObject = { [key: string]: string[] | boolean[] };

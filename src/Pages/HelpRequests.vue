@@ -6,6 +6,8 @@ import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
 import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
 
+import { TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
+import { FilterValue } from '@/general/filter/SelectedFilters';
 import { useFiltering } from '@/general/filter/useFiltering';
 import { useSearch } from '@/general/filter/useSearch';
 import { useAuthStore } from '@/store/auth';
@@ -37,7 +39,7 @@ onBeforeMount(async () => {
 const route = useRoute();
 
 const { searchQuery, handleSearchQueryChange, resetSearchQuery } = useSearch(route.query.search as string);
-const { filterPanelStatus, selectedFilters, handleFilterOptionsChange, filteringDataByParams, resetSelectedFilters } =
+const { filterPanelStatus, selectedFilters, filteringDataByParams, resetSelectedFilters, updateSelectedFilters } =
   useFiltering();
 
 const dataToDisplay = computed(() => {
@@ -45,11 +47,17 @@ const dataToDisplay = computed(() => {
   if (!searchQuery.value && !Object.keys(selectedFilters.value).length) return helpRequests.data;
   else {
     tempData = handleSearchQueryChange(tempData);
-    tempData = filteringDataByParams(tempData);
+    // tempData = filteringDataByParams(tempData);
   }
 
   return tempData;
 });
+
+function handleSelectedFiltersChange(newFilter: { [key in TypeKeyFilterOptions]: FilterValue }) {
+  const key = Object.keys(newFilter)[0] as TypeKeyFilterOptions;
+  const value = Object.values(newFilter)[0] as FilterValue;
+  updateSelectedFilters(key, value);
+}
 
 const display = useDisplay();
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
@@ -67,7 +75,7 @@ const isFilter = computed(() => Object.keys(selectedFilters.value).length > 0);
         :filterPanelStatus="filterPanelStatus"
         :isFilter="isFilter"
         :mobile="display.mobile.value"
-        @updateFilter="(newFilter) => handleFilterOptionsChange(newFilter)"
+        @updateFilter="(newFilter) => handleSelectedFiltersChange(newFilter)"
         @resetFilter="resetSelectedFilters()"
       />
     </v-col>

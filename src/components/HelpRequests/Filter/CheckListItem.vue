@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TypeFilterOptionsInitItem } from '@/general/filter/FilterOptionsInit';
 import { IFilterOptions } from '@/general/filterOptions';
 import { selectedFilters } from '@/general/selectedFilters';
 import { watch } from 'vue';
@@ -7,7 +8,7 @@ const prop = defineProps<{
   title: string;
   titleId: string;
   options: { label: string; id: string }[];
-  filterPanelStatus: IFilterOptions;
+  filterPanelStatus: TypeFilterOptionsInitItem;
 }>();
 const emit = defineEmits(['checkbox']);
 function onChange() {

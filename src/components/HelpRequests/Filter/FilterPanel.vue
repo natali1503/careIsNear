@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
+import { TypeHelperRequirements } from '@/general/filter/HelperRequirements';
 import { filterOptions, IFilterOptions } from '@/general/filterOptions';
 import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
 
-const prop = defineProps<{ filterPanelStatus: IFilterOptions; isFilter: boolean; mobile: boolean }>();
+const prop = defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
 const emit = defineEmits(['updateFilter', 'resetFilter']);
 </script>
 <template>
@@ -39,7 +41,7 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                   :options="filterOption.options"
                   :filterPanelStatus="filterPanelStatus[filterOption.id]"
                   @checkbox="
-                    (value) => {
+                    (value: string) => {
                       emit('updateFilter', { [filterOption.id]: value });
                     }
                   "
@@ -50,7 +52,7 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                   :items="filterOption.accordion.items"
                   :filterPanelStatus="filterPanelStatus"
                   @checkboxAccordion="
-                    (value) => {
+                    (value: TypeHelperRequirements) => {
                       emit('updateFilter', value);
                     }
                   "
