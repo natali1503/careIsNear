@@ -65,7 +65,7 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                   label="Выберете дату"
                   @update:modelValue="
                     (value) => {
-                      emit('updateFilter', { endingDate: String(new Date(value).getTime()) });
+                      emit('updateFilter', { endingDate: value ? new Date(value) : null });
                     }
                   "
                   :append-inner-icon="filterPanelStatus.endingDate && 'mdi-close-circle'"

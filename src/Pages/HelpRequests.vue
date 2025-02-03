@@ -47,7 +47,7 @@ const dataToDisplay = computed(() => {
   if (!searchQuery.value && !Object.keys(selectedFilters.value).length) return helpRequests.data;
   else {
     tempData = handleSearchQueryChange(tempData);
-    // tempData = filteringDataByParams(tempData);
+    tempData = filteringDataByParams(tempData);
   }
 
   return tempData;

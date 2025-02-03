@@ -5,7 +5,7 @@ export const filterOptions = [
   {
     type: 'checkList',
     title: 'Кому мы помогаем',
-    id: FilterOptions.helpType,
+    id: FilterOptions.requesterType,
     options: [
       { label: 'Пенсионеры', id: 'person' },
       { label: 'Дома престарелых', id: 'organization' },
