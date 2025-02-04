@@ -26,7 +26,6 @@ export class SelectedFilters {
   private setHelperRequirements(helperRequirements: TypeHelperRequirements) {
     const helperRequirementsObj = new HelperRequirements();
     const currentValue = this.filter[FilterOptions.helperRequirements] || helperRequirementsObj.getFilter();
-
     helperRequirementsObj.updateFilter(currentValue, helperRequirements);
     this.filter[FilterOptions.helperRequirements] = helperRequirementsObj.getFilter();
   }
@@ -64,23 +63,31 @@ class HelperRequirements {
   constructor() {
     this.filterHelperRequirements = {};
   }
-  updateFilter(currentValue: TypeHelperRequirementsArr, updateValue: TypeHelperRequirements) {
-    const [newKey, newValue] = Object.entries(updateValue)[0] as [TypeKeyHelperRequirements, string | boolean];
-    type typeNewValue = typeof newValue;
-    if (!Object.keys(currentValue).length) {
-      this.filterHelperRequirements = { [newKey]: [newValue] };
+  updateFilter(currentFilter: TypeHelperRequirementsArr, updateFilter: TypeHelperRequirements) {
+    const [newKey, newValue] = Object.entries(updateFilter)[0] as [TypeKeyHelperRequirements, string | boolean];
+
+    const newFilter: Map<TypeKeyHelperRequirements, (string | boolean)[]> = new Map();
+    if (!Object.keys(currentFilter).length) {
+      // currentFilter={}
+      newFilter.set(newKey, [newValue]);
     } else {
-      for (const [keyFilter, values] of Object.entries(currentValue) as [
-        TypeKeyHelperRequirements,
-        (string | boolean)[],
-      ][]) {
-        if ((values as typeNewValue[]).includes(newValue)) {
-          this.removeValue(keyFilter, newValue, values);
-        } else {
-          (this.filterHelperRequirements[keyFilter] as typeNewValue[]) = [...values, newValue];
+      const keyFilter = Object.keys(currentFilter) as TypeKeyHelperRequirements[];
+      const setKey: Set<TypeKeyHelperRequirements> = new Set([...keyFilter, newKey]);
+
+      setKey.forEach((key: TypeKeyHelperRequirements) => {
+        const currentValue = (currentFilter[key] as (string | boolean)[]) || [];
+        if (key === newKey) {
+          if (currentValue.includes(newValue))
+            newFilter.set(key, [...currentValue.filter((value) => value !== newValue)]);
+          else newFilter.set(key, [...currentValue, newValue]);
+        } else if (key !== newKey) {
+          newFilter.set(key, [...currentValue]);
         }
-      }
+      });
     }
+
+    this.filterHelperRequirements = Object.fromEntries(newFilter);
+    this.removeValue(newKey);
   }
   hasKeyFilter(keyFilter: TypeKeyHelperRequirements): boolean {
     return keyFilter in this.filterHelperRequirements;
@@ -93,14 +100,7 @@ class HelperRequirements {
       return (curruntValue as boolean[]).includes(valueFilter);
     }
   }
-  private removeValue(
-    keyFilter: TypeKeyHelperRequirements,
-    removeValue: string | boolean,
-    values: (string | boolean)[],
-  ) {
-    (this.filterHelperRequirements[keyFilter] as (string | boolean)[]) = values.filter(
-      (value) => value !== removeValue,
-    );
+  private removeValue(keyFilter: TypeKeyHelperRequirements) {
     const isEmpty = this.filterHelperRequirements[keyFilter]?.length === 0;
     if (isEmpty) delete this.filterHelperRequirements[keyFilter];
   }

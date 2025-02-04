@@ -54,6 +54,7 @@ export function useFiltering() {
 
   async function resetSelectedFilters(): Promise<void> {
     selectedFilters.value.resetFilter();
+    filterPanelStatus.value = clonedeep(FilterOptionsInit);
   }
   // watch(
   //   () => selectedFilters.value,
