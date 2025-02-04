@@ -1,4 +1,5 @@
 import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
+import { test, TypeFlatFilter, TypeKeyFlatFilter, TypeKeyFlatFilterValue } from './FlatFilter';
 import { TypeHelperRequirements, TypeHelperRequirementsArr, TypeKeyHelperRequirements } from './HelperRequirements';
 import { FilterValue, TypeSelectedFilters } from './SelectedFilters';
 
@@ -55,6 +56,30 @@ export class SelectedFilters {
   }
   public resetFilter() {
     this.filter = {};
+  }
+  getFlatFilter() {
+    const flatFilterMap = new Map();
+    for (const [key, value] of Object.entries(this.filter) as [
+      keyof TypeSelectedFilters,
+      TypeSelectedFilters[keyof TypeSelectedFilters],
+    ][]) {
+      if (value) {
+        const typedKey = key as keyof TypeFlatFilter;
+
+        if (value instanceof Date) flatFilterMap.set(typedKey, value);
+        else if (Array.isArray(value)) {
+          flatFilterMap.set(typedKey, [...value]);
+        } else if (typeof value === 'object' && !(value instanceof Date)) {
+          for (const [keyNested, valueNested] of Object.entries(value) as [
+            keyof TypeHelperRequirementsArr,
+            TypeHelperRequirementsArr[keyof TypeHelperRequirementsArr],
+          ][]) {
+            if (valueNested) flatFilterMap.set(keyNested, [...valueNested]);
+          }
+        }
+      }
+    }
+    return Object.fromEntries(flatFilterMap) as TypeFlatFilter;
   }
 }
 

@@ -7,6 +7,7 @@ import { HelpRequestData } from '../../api/generated';
 import { selectedFiltersInit } from './Filter';
 import { TypeKeyFilterOptions } from './FilterOptions';
 import { FilterOptionsInit, TypeFilterOptionsInit } from './FilterOptionsInit';
+import { FlatFilter, TypeFlatFilter } from './FlatFilter';
 import { TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
 import { TypeSelectedFilters } from './SelectedFilters';
 
@@ -56,18 +57,35 @@ export function useFiltering() {
     selectedFilters.value.resetFilter();
     filterPanelStatus.value = clonedeep(FilterOptionsInit);
   }
-  // watch(
-  //   () => selectedFilters.value,
-  //   async () => {
-  //     updateQueryRouter();
-  //   },
-  //   { deep: true },
-  // );
 
   function updateSelectedFilters(keyFilter: TypeKeyFilterOptions, newValue: string | TypeHelperRequirements | Date) {
     selectedFilters.value.updateFilter(keyFilter, newValue);
-    console.log(selectedFilters.value);
   }
+
+  async function updateQueryRouter() {
+    await nextTick();
+    const currentQuery = { ...router.currentRoute.value.query };
+    const newQuery: { [key: string]: string } = {};
+    const flatCurrentFilter: TypeFlatFilter = selectedFiltersInit.getFlatFilter();
+    Object.values(FlatFilter).forEach((keyFilter) => {
+      if (keyFilter in currentQuery) delete currentQuery[keyFilter];
+    });
+    for (const [key, value] of Object.entries(flatCurrentFilter)) {
+      if (Array.isArray(value)) {
+        newQuery[key] = value.join(',');
+      } else if (value instanceof Date) newQuery[key] = String(value.getTime());
+    }
+    router.replace({ query: { ...currentQuery, ...newQuery } });
+  }
+
+  watch(
+    () => selectedFilters.value,
+    async () => {
+      console.log(79);
+      updateQueryRouter();
+    },
+    { deep: true },
+  );
 
   return {
     filterPanelStatus,
