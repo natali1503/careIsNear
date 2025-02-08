@@ -1,20 +1,63 @@
 import clonedeep from 'lodash.clonedeep';
 import { nextTick, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { LocationQueryRaw, LocationQueryValueRaw, useRouter } from 'vue-router';
 
 import { HelpRequestData } from '../../api/generated';
 
 import { selectedFiltersInit } from './Filter';
-import { TypeKeyFilterOptions } from './FilterOptions';
-import { FilterOptionsInit, TypeFilterOptionsInit } from './FilterOptionsInit';
+import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
+import { FilterPanelStatusNoChoice, TypeFilterPanelStatus } from './FilterOptionsInit';
 import { FlatFilter, TypeFlatFilter } from './FlatFilter';
 import { TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
 import { TypeSelectedFilters } from './SelectedFilters';
 
 export function useFiltering() {
-  const selectedFilters = ref(selectedFiltersInit);
-  const filterPanelStatus = ref<TypeFilterOptionsInit>(clonedeep(FilterOptionsInit));
   const router = useRouter();
+  const flatFilteringOptionsFromUrl = () => {
+    const currentQuery = { ...router.currentRoute.value.query };
+    const flatCurrentFilter: TypeFlatFilter = {};
+    Object.values(FlatFilter).forEach((keyFilter) => {
+      if (keyFilter in currentQuery) {
+        const currentQueryValue = currentQuery[keyFilter];
+        if (typeof currentQueryValue === 'string') {
+          if (keyFilter === FlatFilter.endingDate) {
+            flatCurrentFilter[keyFilter] = new Date(currentQueryValue);
+          } else flatCurrentFilter[keyFilter] = [currentQueryValue];
+        } else if (typeof currentQueryValue === 'number') flatCurrentFilter[keyFilter] = [Boolean(currentQueryValue)];
+        else if (Array.isArray(currentQueryValue)) {
+          if (currentQueryValue.every((el) => typeof el === 'number')) {
+            flatCurrentFilter[keyFilter] = currentQueryValue.map((el) => Boolean(el)) as boolean[];
+          } else {
+            flatCurrentFilter[keyFilter] = currentQueryValue as string[];
+          }
+        }
+      }
+    });
+    return flatCurrentFilter;
+  };
+  const selectedFilters = ref(selectedFiltersInit);
+  selectedFilters.value.init(flatFilteringOptionsFromUrl());
+
+  const filterPanelStatusInit = () => {
+    const filterPanelStatusInit = clonedeep(FilterPanelStatusNoChoice);
+    const currentFilter = selectedFilters.value.getFilter();
+
+    for (const [keyFilter, nestedValue] of Object.entries(FilterPanelStatusNoChoice)) {
+      const typedKeyFilter = keyFilter as TypeKeyFilterOptions;
+      if (typedKeyFilter in currentFilter) {
+        if (typeof nestedValue === 'object' && !(nestedValue instanceof Date) && nestedValue !== null) {
+          for (const nestedKey of Object.keys(nestedValue)) {
+            if (currentFilter[typedKeyFilter].includes(nestedKey))
+              filterPanelStatusInit[typedKeyFilter][nestedKey] = true;
+          }
+        } else if (nestedValue instanceof Date) {
+          filterPanelStatusInit[FilterOptions.endingDate] = nestedValue;
+        }
+      }
+    }
+    return filterPanelStatusInit;
+  };
+  const filterPanelStatus = ref<TypeFilterPanelStatus>(filterPanelStatusInit());
 
   function filteringDataByParams(dataToFiltering: HelpRequestData[]) {
     return dataToFiltering.filter((requestHelp) => {
@@ -55,7 +98,7 @@ export function useFiltering() {
 
   async function resetSelectedFilters(): Promise<void> {
     selectedFilters.value.resetFilter();
-    filterPanelStatus.value = clonedeep(FilterOptionsInit);
+    filterPanelStatus.value = clonedeep(FilterPanelStatusNoChoice);
   }
 
   function updateSelectedFilters(keyFilter: TypeKeyFilterOptions, newValue: string | TypeHelperRequirements | Date) {
@@ -65,23 +108,35 @@ export function useFiltering() {
   async function updateQueryRouter() {
     await nextTick();
     const currentQuery = { ...router.currentRoute.value.query };
-    const newQuery: { [key: string]: string } = {};
+
+    const newQuery: LocationQueryRaw = {};
     const flatCurrentFilter: TypeFlatFilter = selectedFiltersInit.getFlatFilter();
     Object.values(FlatFilter).forEach((keyFilter) => {
       if (keyFilter in currentQuery) delete currentQuery[keyFilter];
     });
+
     for (const [key, value] of Object.entries(flatCurrentFilter)) {
+      if (value instanceof Date) newQuery[key] = String(value.getTime());
       if (Array.isArray(value)) {
-        newQuery[key] = value.join(',');
-      } else if (value instanceof Date) newQuery[key] = String(value.getTime());
+        value.forEach((filter) => {
+          if (key in newQuery) {
+            const temp = newQuery[key] as LocationQueryValueRaw[];
+            if (typeof filter === 'string') newQuery[key] = [...temp, filter];
+            else newQuery[key] = [...temp, Number(filter)];
+          } else {
+            if (typeof filter === 'string') newQuery[key] = [filter];
+            else newQuery[key] = [Number(filter)];
+          }
+        });
+      }
     }
+    console.log(newQuery);
     router.replace({ query: { ...currentQuery, ...newQuery } });
   }
 
   watch(
     () => selectedFilters.value,
     async () => {
-      console.log(79);
       updateQueryRouter();
     },
     { deep: true },

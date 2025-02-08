@@ -16,3 +16,5 @@ export type TypeFlatFilter = { [key in TypeKeyFlatFilter]?: TypeKeyFlatFilterVal
 
 type testTypeSelectedFilters = Omit<TypeSelectedFilters, FilterOptions.helperRequirements>;
 export type test = Omit<testTypeSelectedFilters, 'helperRequirements'> | Partial<TypeHelperRequirementsArr>;
+
+export type ewefw = { [key in FlatFilter]?: key extends FlatFilter.endingDate ? string : TypeKeyFlatFilterValue };

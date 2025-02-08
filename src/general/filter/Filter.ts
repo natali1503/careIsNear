@@ -1,12 +1,20 @@
 import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
-import { test, TypeFlatFilter, TypeKeyFlatFilter, TypeKeyFlatFilterValue } from './FlatFilter';
-import { TypeHelperRequirements, TypeHelperRequirementsArr, TypeKeyHelperRequirements } from './HelperRequirements';
+import { ewefw, TypeFlatFilter, TypeKeyFlatFilter, TypeKeyFlatFilterValue } from './FlatFilter';
+import {
+  HelperRequirements,
+  TypeHelperRequirements,
+  TypeHelperRequirementsArr,
+  TypeKeyHelperRequirements,
+} from './HelperRequirements';
 import { FilterValue, TypeSelectedFilters } from './SelectedFilters';
 
 export class SelectedFilters {
   private filter: TypeSelectedFilters;
   constructor() {
     this.filter = {};
+  }
+  public init(flatFilter: TypeFlatFilter) {
+    if (Object.keys(flatFilter)) this.fillFilterByFlatFilter(flatFilter);
   }
   public getFilter() {
     return this.filter;
@@ -20,12 +28,28 @@ export class SelectedFilters {
   hasKeyFilter(keyFilter: TypeKeyFilterOptions): boolean {
     return keyFilter in this.filter;
   }
-
+  fillFilterByFlatFilter(flatFilter: TypeFlatFilter) {
+    for (const [keyFilter, valueFilter] of Object.entries(flatFilter)) {
+      if ((Object.values(HelperRequirements) as string[]).includes(keyFilter)) {
+        if (Array.isArray(valueFilter)) {
+          const typedKeyFilter = keyFilter as TypeKeyFilterOptions;
+          valueFilter.forEach((value) =>
+            this.updateFilter(typedKeyFilter, { [keyFilter]: value } as TypeHelperRequirements),
+          );
+        }
+      } else {
+        if (Array.isArray(valueFilter)) {
+          const typedKeyFilter = keyFilter as TypeKeyFilterOptions;
+          valueFilter.forEach((value) => this.updateFilter(typedKeyFilter, value as string));
+        }
+      }
+    }
+  }
   private setDate(date: Date | null) {
     this.filter[FilterOptions.endingDate] = date;
   }
   private setHelperRequirements(helperRequirements: TypeHelperRequirements) {
-    const helperRequirementsObj = new HelperRequirements();
+    const helperRequirementsObj = new SelectedHelperRequirements();
     const currentValue = this.filter[FilterOptions.helperRequirements] || helperRequirementsObj.getFilter();
     helperRequirementsObj.updateFilter(currentValue, helperRequirements);
     this.filter[FilterOptions.helperRequirements] = helperRequirementsObj.getFilter();
@@ -57,7 +81,7 @@ export class SelectedFilters {
   public resetFilter() {
     this.filter = {};
   }
-  getFlatFilter() {
+  public getFlatFilter() {
     const flatFilterMap = new Map();
     for (const [key, value] of Object.entries(this.filter) as [
       keyof TypeSelectedFilters,
@@ -83,7 +107,7 @@ export class SelectedFilters {
   }
 }
 
-class HelperRequirements {
+class SelectedHelperRequirements {
   private filterHelperRequirements: TypeHelperRequirementsArr;
   constructor() {
     this.filterHelperRequirements = {};

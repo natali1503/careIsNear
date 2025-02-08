@@ -16,7 +16,18 @@ export type TypeFilterOptionsInit = {
   [key in TypeKeyFilterOptions]: TypeFilterOptionsInitItem;
 };
 
-export const FilterOptionsInit = {
+export type TypeFilterPanelStatus = {
+  [FilterOptions.helpType]: { finance: boolean; material: boolean };
+  [FilterOptions.requesterType]: { person: boolean; organization: boolean };
+  [FilterOptions.helperRequirements]: {
+    [HelperRequirements.qualification]: { professional: boolean; common: boolean };
+    [HelperRequirements.helperType]: { group: boolean; single: boolean };
+    [HelperRequirements.isOnline]: { online: boolean; offline: boolean };
+  };
+  [FilterOptions.endingDate]: Date | null;
+};
+
+export const FilterPanelStatusNoChoice: TypeFilterPanelStatus = {
   [FilterOptions.helpType]: { finance: false, material: false },
   [FilterOptions.requesterType]: { person: false, organization: false },
   [FilterOptions.helperRequirements]: {
