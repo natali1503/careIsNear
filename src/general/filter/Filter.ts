@@ -1,5 +1,5 @@
 import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
-import { ewefw, TypeFlatFilter, TypeKeyFlatFilter, TypeKeyFlatFilterValue } from './FlatFilter';
+import { TypeFlatFilter, TypeKeyFlatFilter, TypeKeyFlatFilterValue } from './FlatFilter';
 import {
   HelperRequirements,
   TypeHelperRequirements,
@@ -28,15 +28,20 @@ export class SelectedFilters {
   hasKeyFilter(keyFilter: TypeKeyFilterOptions): boolean {
     return keyFilter in this.filter;
   }
-  fillFilterByFlatFilter(flatFilter: TypeFlatFilter) {
+  private fillFilterByFlatFilter(flatFilter: TypeFlatFilter) {
     for (const [keyFilter, valueFilter] of Object.entries(flatFilter)) {
       if ((Object.values(HelperRequirements) as string[]).includes(keyFilter)) {
         if (Array.isArray(valueFilter)) {
           const typedKeyFilter = keyFilter as TypeKeyFilterOptions;
-          valueFilter.forEach((value) =>
-            this.updateFilter(typedKeyFilter, { [keyFilter]: value } as TypeHelperRequirements),
-          );
+          valueFilter.forEach((value) => {
+            if (keyFilter === HelperRequirements.isOnline) {
+              const typedValue = value === '1' ? true : false;
+              this.updateFilter(typedKeyFilter, { [keyFilter]: typedValue } as TypeHelperRequirements);
+            } else this.updateFilter(typedKeyFilter, { [keyFilter]: value } as TypeHelperRequirements);
+          });
         }
+      } else if (valueFilter instanceof Date) {
+        this.setDate(valueFilter);
       } else {
         if (Array.isArray(valueFilter)) {
           const typedKeyFilter = keyFilter as TypeKeyFilterOptions;
@@ -104,6 +109,11 @@ export class SelectedFilters {
       }
     }
     return Object.fromEntries(flatFilterMap) as TypeFlatFilter;
+  }
+  getValueByKeyFilter(keyFilter: TypeKeyFilterOptions) {
+    if (this.hasKeyFilter(keyFilter)) {
+      return this.filter[keyFilter];
+    } else return null;
   }
 }
 

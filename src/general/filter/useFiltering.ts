@@ -7,8 +7,8 @@ import { HelpRequestData } from '../../api/generated';
 import { selectedFiltersInit } from './Filter';
 import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
 import { FilterPanelStatusNoChoice, TypeFilterPanelStatus } from './FilterOptionsInit';
-import { FlatFilter, TypeFlatFilter } from './FlatFilter';
-import { TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
+import { FlatFilter, TypeFlatFilter, TypeKeyFlatFilter } from './FlatFilter';
+import { HelperRequirements, TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
 import { TypeSelectedFilters } from './SelectedFilters';
 
 export function useFiltering() {
@@ -21,7 +21,7 @@ export function useFiltering() {
         const currentQueryValue = currentQuery[keyFilter];
         if (typeof currentQueryValue === 'string') {
           if (keyFilter === FlatFilter.endingDate) {
-            flatCurrentFilter[keyFilter] = new Date(currentQueryValue);
+            flatCurrentFilter[keyFilter] = new Date(Number(currentQueryValue));
           } else flatCurrentFilter[keyFilter] = [currentQueryValue];
         } else if (typeof currentQueryValue === 'number') flatCurrentFilter[keyFilter] = [Boolean(currentQueryValue)];
         else if (Array.isArray(currentQueryValue)) {
@@ -40,18 +40,47 @@ export function useFiltering() {
 
   const filterPanelStatusInit = () => {
     const filterPanelStatusInit = clonedeep(FilterPanelStatusNoChoice);
-    const currentFilter = selectedFilters.value.getFilter();
+    const currentFilter = selectedFilters.value;
 
-    for (const [keyFilter, nestedValue] of Object.entries(FilterPanelStatusNoChoice)) {
-      const typedKeyFilter = keyFilter as TypeKeyFilterOptions;
-      if (typedKeyFilter in currentFilter) {
-        if (typeof nestedValue === 'object' && !(nestedValue instanceof Date) && nestedValue !== null) {
-          for (const nestedKey of Object.keys(nestedValue)) {
-            if (currentFilter[typedKeyFilter].includes(nestedKey))
-              filterPanelStatusInit[typedKeyFilter][nestedKey] = true;
+    for (const [keyFilter, value] of Object.entries(FilterPanelStatusNoChoice) as [
+      TypeKeyFilterOptions,
+      TypeFilterPanelStatus[keyof TypeFilterPanelStatus],
+    ][]) {
+      if (currentFilter.hasKeyFilter(keyFilter)) {
+        const valueCurrentFilter = currentFilter.getValueByKeyFilter(keyFilter);
+
+        if (valueCurrentFilter instanceof Date && keyFilter === FilterOptions.endingDate)
+          filterPanelStatusInit[keyFilter] = valueCurrentFilter;
+        else if (
+          Array.isArray(valueCurrentFilter) &&
+          (keyFilter === FilterOptions.helpType || keyFilter === FilterOptions.requesterType)
+        ) {
+          Object.keys(value as object).forEach((keyNested) => {
+            filterPanelStatusInit[keyFilter][keyNested] = valueCurrentFilter.includes(keyNested);
+          });
+        } else if (
+          !(valueCurrentFilter instanceof Date) &&
+          valueCurrentFilter !== null &&
+          typeof valueCurrentFilter === 'object' &&
+          !Array.isArray(valueCurrentFilter)
+        ) {
+          for (const [keyNested, valueNested] of Object.entries(value as object)) {
+            if (keyNested === HelperRequirements.isOnline) {
+              if (valueCurrentFilter[keyNested]) {
+                if (valueCurrentFilter[keyNested].includes(true))
+                  filterPanelStatusInit[keyFilter][keyNested].online = true;
+                if (valueCurrentFilter[keyNested].includes(false))
+                  filterPanelStatusInit[keyFilter][keyNested].offline = true;
+              } else {
+                filterPanelStatusInit[keyFilter][keyNested].online = false;
+                filterPanelStatusInit[keyFilter][keyNested].offline = false;
+              }
+            } else {
+              Object.keys(valueNested).forEach((value) => {
+                filterPanelStatusInit[keyFilter][keyNested][value] = valueCurrentFilter[keyNested]?.includes(value);
+              });
+            }
           }
-        } else if (nestedValue instanceof Date) {
-          filterPanelStatusInit[FilterOptions.endingDate] = nestedValue;
         }
       }
     }
@@ -80,7 +109,7 @@ export function useFiltering() {
             const helperRequirementsRequestHelp = requestHelp[typedKey];
             if (typeof helperRequirementsRequestHelp === 'object' && typedNestedKey in helperRequirementsRequestHelp) {
               const nestedValueRequestHelp = helperRequirementsRequestHelp[typedNestedKey];
-              if (!nestedValueRequestHelp) return false;
+              if (nestedValueRequestHelp === undefined) return false;
               if (typeof nestedValueRequestHelp === 'string')
                 return (nestedValues as string[]).includes(nestedValueRequestHelp);
               if (typeof nestedValueRequestHelp === 'boolean')
@@ -130,7 +159,6 @@ export function useFiltering() {
         });
       }
     }
-    console.log(newQuery);
     router.replace({ query: { ...currentQuery, ...newQuery } });
   }
 

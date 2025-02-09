@@ -61,7 +61,7 @@ function handleSelectedFiltersChange(newFilter: { [key in TypeKeyFilterOptions]:
 
 const display = useDisplay();
 const isError = computed(() => helpRequests.isError || favouritesRequestsHelp.isError);
-const isFilter = computed(() => Object.keys(selectedFilters.value).length > 0);
+const isFilter = computed(() => selectedFilters.value && Object.keys(selectedFilters.value.getFilter()).length > 0);
 </script>
 <template>
   <PageTemplate title="Запросы о помощи">

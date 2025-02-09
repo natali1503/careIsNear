@@ -63,6 +63,7 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                 <p>Помощь актуальна до:</p>
                 <v-date-input
                   label="Выберете дату"
+                  v-model="filterPanelStatus.endingDate"
                   @update:modelValue="
                     (value) => {
                       emit('updateFilter', { endingDate: value ? new Date(value) : null });
