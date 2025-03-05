@@ -12,7 +12,7 @@ import { useFiltering } from '@/general/filter/useFiltering';
 import { useSearch } from '@/general/filter/useSearch';
 import { useAuthStore } from '@/store/auth';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { useDisplay } from 'vuetify/lib/framework.mjs';

@@ -1,5 +1,5 @@
 import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
-import { TypeFlatFilter, TypeKeyFlatFilter, TypeKeyFlatFilterValue } from './FlatFilter';
+import { TypeFlatFilter } from './FlatFilter';
 import {
   HelperRequirements,
   TypeHelperRequirements,
@@ -22,7 +22,8 @@ export class SelectedFilters {
   public updateFilter(keyFilter: TypeKeyFilterOptions, valueFilter: FilterValue) {
     if (valueFilter instanceof Date || valueFilter === null) this.setDate(valueFilter);
     if (typeof valueFilter === 'string') this.updateValueForKey(keyFilter, valueFilter);
-    if (typeof valueFilter === 'object' && !(valueFilter instanceof Date)) this.setHelperRequirements(valueFilter);
+    if (typeof valueFilter === 'object' && !(valueFilter instanceof Date) && valueFilter !== null)
+      this.setHelperRequirements(valueFilter);
     this.removeEmptyKey();
   }
   hasKeyFilter(keyFilter: TypeKeyFilterOptions): boolean {
@@ -127,7 +128,6 @@ class SelectedHelperRequirements {
 
     const newFilter: Map<TypeKeyHelperRequirements, (string | boolean)[]> = new Map();
     if (!Object.keys(currentFilter).length) {
-      // currentFilter={}
       newFilter.set(newKey, [newValue]);
     } else {
       const keyFilter = Object.keys(currentFilter) as TypeKeyHelperRequirements[];
@@ -139,7 +139,7 @@ class SelectedHelperRequirements {
           if (currentValue.includes(newValue))
             newFilter.set(key, [...currentValue.filter((value) => value !== newValue)]);
           else newFilter.set(key, [...currentValue, newValue]);
-        } else if (key !== newKey) {
+        } else {
           newFilter.set(key, [...currentValue]);
         }
       });
@@ -151,7 +151,7 @@ class SelectedHelperRequirements {
   hasKeyFilter(keyFilter: TypeKeyHelperRequirements): boolean {
     return keyFilter in this.filterHelperRequirements;
   }
-  chekValue(keyFilter: TypeKeyHelperRequirements, valueFilter: string | boolean) {
+  checkValue(keyFilter: TypeKeyHelperRequirements, valueFilter: string | boolean) {
     const curruntValue = this.filterHelperRequirements[keyFilter];
     if (typeof valueFilter === 'string') {
       return (curruntValue as string[]).includes(valueFilter);
@@ -167,5 +167,6 @@ class SelectedHelperRequirements {
     return this.filterHelperRequirements;
   }
 }
+export type TypeSelectedHelperRequirements = SelectedHelperRequirements;
 
 export const selectedFiltersInit = new SelectedFilters();

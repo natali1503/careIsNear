@@ -28,9 +28,9 @@ export type HelpRequestData = {
   requesterType?: 'person' | 'organization';
   helpType?: 'finance' | 'material';
   helperRequirements?: {
-    helperType?: 'group' | 'single';
+    helperType?: string;
     isOnline?: boolean;
-    qualification?: 'professional' | 'common';
+    qualification?: string;
   };
   contributorsCount?: number;
   requestGoal?: number;

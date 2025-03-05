@@ -1,27 +1,16 @@
 <script setup lang="ts">
 import { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
 import { TypeHelperRequirements } from '@/general/filter/HelperRequirements';
-import { filterOptions, IFilterOptions } from '@/general/filterOptions';
+import { filterOptions } from '@/general/filterOptions';
 import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
+import DateFilter from './DateFilter.vue';
 
-const prop = defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
+const props = defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
 const emit = defineEmits(['updateFilter', 'resetFilter']);
 </script>
 <template>
-  <div
-    style="
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background-color: #fff;
-      border-radius: 4px;
-      border: 1px solid #e0e0e0;
-      padding: 20px 20px;
-      width: 100%;
-      height: max-content;
-    "
-  >
+  <div class="filterPanel">
     <v-expansion-panels style="width: 100%; padding: 0" :model-value="mobile ? null : 0">
       <v-expansion-panel>
         <v-expansion-panel-title class="title">
@@ -58,30 +47,30 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                   "
                 />
               </div>
-
-              <div style="display: flex; flex-direction: column; gap: 10px">
-                <p>Помощь актуальна до:</p>
-                <v-date-input
-                  label="Выберете дату"
-                  v-model="filterPanelStatus.endingDate"
-                  @update:modelValue="
-                    (value) => {
-                      emit('updateFilter', { endingDate: value ? new Date(value) : null });
-                    }
-                  "
-                  :append-inner-icon="filterPanelStatus.endingDate && 'mdi-close-circle'"
-                ></v-date-input>
-              </div>
+              <DateFilter
+                v-model:selectedDate="filterPanelStatus.endingDate as Date"
+                @updateDateFilter="(value) => emit('updateFilter', value)"
+              />
             </div>
             <v-btn class="btn" @click="emit('resetFilter')" :disabled="!isFilter">Сбросить</v-btn>
           </div>
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
-    <div></div>
   </div>
 </template>
 <style scoped>
+.filterPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+  padding: 20px 20px;
+  width: 100%;
+  height: max-content;
+}
 .title {
   font-weight: 500;
   font-size: 20px;

@@ -2,12 +2,12 @@ import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
 import { HelperRequirements } from './HelperRequirements';
 
 export type TypeFilterOptionsInitItem =
-  | { finance: boolean; material: boolean }
-  | { person: boolean; organization: boolean }
+  | { [key in string]: boolean }
+  // | { person: boolean; organization: boolean }
   | {
-      qualification: { professional: boolean; common: boolean };
-      helperType: { group: boolean; single: boolean };
-      isOnline: { online: boolean; offline: boolean };
+      qualification: { [key in string]: boolean };
+      helperType: { [key in string]: boolean };
+      isOnline: { [key in string]: boolean };
     }
   | Date
   | null;
@@ -16,14 +16,21 @@ export type TypeFilterOptionsInit = {
   [key in TypeKeyFilterOptions]: TypeFilterOptionsInitItem;
 };
 
+export type TypeHelperRequirements = {
+  [HelperRequirements.qualification]: { [key in string]: boolean };
+  [HelperRequirements.helperType]: { [key in string]: boolean };
+  [HelperRequirements.isOnline]: { [key in string]: boolean };
+};
 export type TypeFilterPanelStatus = {
-  [FilterOptions.helpType]: { finance: boolean; material: boolean };
-  [FilterOptions.requesterType]: { person: boolean; organization: boolean };
-  [FilterOptions.helperRequirements]: {
-    [HelperRequirements.qualification]: { professional: boolean; common: boolean };
-    [HelperRequirements.helperType]: { group: boolean; single: boolean };
-    [HelperRequirements.isOnline]: { online: boolean; offline: boolean };
-  };
+  // [FilterOptions.helpType]: { finance: boolean; material: boolean };
+  // [FilterOptions.requesterType]: { person: boolean; organization: boolean };
+  [FilterOptions.helpType]: { [key in string]: boolean };
+  [FilterOptions.requesterType]: { [key in string]: boolean };
+  [FilterOptions.helperRequirements]: TypeHelperRequirements;
+  // [HelperRequirements.qualification]: { professional: boolean; common: boolean };
+  // [HelperRequirements.helperType]: { group: boolean; single: boolean };
+  // [HelperRequirements.isOnline]: { online: boolean; offline: boolean };
+
   [FilterOptions.endingDate]: Date | null;
 };
 

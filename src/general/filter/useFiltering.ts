@@ -4,15 +4,16 @@ import { LocationQueryRaw, LocationQueryValueRaw, useRouter } from 'vue-router';
 
 import { HelpRequestData } from '../../api/generated';
 
-import { selectedFiltersInit } from './Filter';
-import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
+import { SelectedFilters, selectedFiltersInit } from './Filter';
+import { TypeKeyFilterOptions } from './FilterOptions';
 import { FilterPanelStatusNoChoice, TypeFilterPanelStatus } from './FilterOptionsInit';
-import { FlatFilter, TypeFlatFilter, TypeKeyFlatFilter } from './FlatFilter';
-import { HelperRequirements, TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
+import { filterPanelStatus as filterPanelStatusInitValue } from './FilterPanelStatus';
+import { FlatFilter, TypeFlatFilter } from './FlatFilter';
+import { TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
 import { TypeSelectedFilters } from './SelectedFilters';
-
 export function useFiltering() {
   const router = useRouter();
+
   const flatFilteringOptionsFromUrl = () => {
     const currentQuery = { ...router.currentRoute.value.query };
     const flatCurrentFilter: TypeFlatFilter = {};
@@ -39,51 +40,9 @@ export function useFiltering() {
   selectedFilters.value.init(flatFilteringOptionsFromUrl());
 
   const filterPanelStatusInit = () => {
-    const filterPanelStatusInit = clonedeep(FilterPanelStatusNoChoice);
-    const currentFilter = selectedFilters.value;
-
-    for (const [keyFilter, value] of Object.entries(FilterPanelStatusNoChoice) as [
-      TypeKeyFilterOptions,
-      TypeFilterPanelStatus[keyof TypeFilterPanelStatus],
-    ][]) {
-      if (currentFilter.hasKeyFilter(keyFilter)) {
-        const valueCurrentFilter = currentFilter.getValueByKeyFilter(keyFilter);
-
-        if (valueCurrentFilter instanceof Date && keyFilter === FilterOptions.endingDate)
-          filterPanelStatusInit[keyFilter] = valueCurrentFilter;
-        else if (
-          Array.isArray(valueCurrentFilter) &&
-          (keyFilter === FilterOptions.helpType || keyFilter === FilterOptions.requesterType)
-        ) {
-          Object.keys(value as object).forEach((keyNested) => {
-            filterPanelStatusInit[keyFilter][keyNested] = valueCurrentFilter.includes(keyNested);
-          });
-        } else if (
-          !(valueCurrentFilter instanceof Date) &&
-          valueCurrentFilter !== null &&
-          typeof valueCurrentFilter === 'object' &&
-          !Array.isArray(valueCurrentFilter)
-        ) {
-          for (const [keyNested, valueNested] of Object.entries(value as object)) {
-            if (keyNested === HelperRequirements.isOnline) {
-              if (valueCurrentFilter[keyNested]) {
-                if (valueCurrentFilter[keyNested].includes(true))
-                  filterPanelStatusInit[keyFilter][keyNested].online = true;
-                if (valueCurrentFilter[keyNested].includes(false))
-                  filterPanelStatusInit[keyFilter][keyNested].offline = true;
-              } else {
-                filterPanelStatusInit[keyFilter][keyNested].online = false;
-                filterPanelStatusInit[keyFilter][keyNested].offline = false;
-              }
-            } else {
-              Object.keys(valueNested).forEach((value) => {
-                filterPanelStatusInit[keyFilter][keyNested][value] = valueCurrentFilter[keyNested]?.includes(value);
-              });
-            }
-          }
-        }
-      }
-    }
+    const selectedFiltersValue = selectedFilters.value as SelectedFilters;
+    filterPanelStatusInitValue.update(selectedFiltersValue);
+    const filterPanelStatusInit = clonedeep(filterPanelStatusInitValue.getFilterPanelStatus());
     return filterPanelStatusInit;
   };
   const filterPanelStatus = ref<TypeFilterPanelStatus>(filterPanelStatusInit());
