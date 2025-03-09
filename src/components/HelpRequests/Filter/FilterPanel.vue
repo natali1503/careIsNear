@@ -25,9 +25,9 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
               <div v-for="filterOption in filterOptions" class="filter">
                 <CheckListItem
                   v-if="filterOption.type === 'checkList'"
-                  :title="filterOption.title"
-                  :titleId="filterOption.id"
-                  :options="filterOption.options"
+                  :title="filterOption.title ?? ''"
+                  :titleId="filterOption.id ?? ''"
+                  :options="filterOption.options ?? []"
                   :filterPanelStatus="filterPanelStatus[filterOption.id]"
                   @checkbox="
                     (value: string) => {
@@ -37,8 +37,8 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                 />
                 <Accordion
                   v-if="filterOption.type === 'accordionList'"
-                  :accordionTitle="filterOption.accordion.accordionTitle"
-                  :items="filterOption.accordion.items"
+                  :accordionTitle="filterOption.accordion?.accordionTitle ?? ''"
+                  :items="filterOption.accordion?.items ?? []"
                   :filterPanelStatus="filterPanelStatus"
                   @checkboxAccordion="
                     (value: TypeHelperRequirements) => {
@@ -54,6 +54,7 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
             </div>
             <v-btn class="btn" @click="emit('resetFilter')" :disabled="!isFilter">Сбросить</v-btn>
           </div>
+          x
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>

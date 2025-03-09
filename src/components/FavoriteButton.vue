@@ -10,7 +10,7 @@ const props = defineProps<{
   id: string;
 }>();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
-async function handleClick(e) {
+async function handleClick(e: Event) {
   e.stopPropagation();
   const toast = useToast();
   try {

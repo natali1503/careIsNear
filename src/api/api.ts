@@ -1,4 +1,4 @@
-import { Options } from '@hey-api/client-fetch';
+import type { Options } from '@hey-api/client-fetch';
 
 import {
   client,
@@ -11,7 +11,7 @@ import {
   postApiRequestByIdContribution,
   postApiUserFavourites,
 } from './generated/services.gen';
-import {
+import type {
   GetApiRequestResponse,
   GetApiUserFavouritesResponse,
   GetApiUserResponse,
@@ -20,10 +20,9 @@ import {
 
 class Api {
   private readonly url: string;
-  private isAuth: boolean | undefined;
+
   constructor(url: string) {
     this.url = url;
-    this.isAuth = false;
   }
   init() {
     client.setConfig({
@@ -40,7 +39,6 @@ class Api {
   async auth({ login, password }: { login: string; password: string }) {
     try {
       const response = await postApiAuth({ body: { login, password } });
-      this.isAuth = response.data?.auth;
       return response.data?.token;
     } catch (e) {
       throw e;
@@ -50,7 +48,7 @@ class Api {
     try {
       const response = await getApiUserFavourites({
         headers: { Authorization: `Bearer ${token}` },
-      });
+      } as Options<{ headers: Record<string, string> }>);
       const data = response.data as GetApiUserFavouritesResponse;
       return data;
     } catch (e) {

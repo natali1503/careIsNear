@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import { GetApiUserResponse } from '../../../api/generated';
+import type { GetApiUserResponse } from '../../../api/generated';
 import { dateFormatting } from '../../../general/dateFormatting';
 import EducationIteam from './EducationIteam.vue';
 import LocationForHelpIteam from './LocationForHelpIteam.vue';
 import Row from './Row.vue';
 import Section from './Section.vue';
 
-const props = defineProps<{
+defineProps<{
   data: GetApiUserResponse;
 }>();
 </script>
 <template>
   <div style="display: flex; flex-direction: column; gap: 30px">
     <Section sectionTitle="Профиль">
-      <Row title="Фамилия" :description="data.lastName" />
-      <Row title="Имя" :description="data.name" />
+      <Row title="Фамилия" :description="data.lastName ?? ''" />
+      <Row title="Имя" :description="data.name ?? ''" />
     </Section>
     <Section sectionTitle="Дата рождения">
       <Row :description="`${dateFormatting(data.birthdate)}`" />
@@ -24,8 +24,8 @@ const props = defineProps<{
         <LocationForHelpIteam
           v-for="(baseLocation, index) in data.baseLocations"
           :key="index"
-          :city="baseLocation.city"
-          :district="baseLocation.district"
+          :city="baseLocation.city ?? ''"
+          :district="baseLocation.district ?? ''"
         />
       </div>
     </Section>
@@ -42,7 +42,7 @@ const props = defineProps<{
       </div>
     </Section>
     <Section sectionTitle="Обо мне">
-      <Row :description="data.additionalInfo" />
+      <Row :description="data.additionalInfo ?? ''" />
     </Section>
   </div>
 </template>

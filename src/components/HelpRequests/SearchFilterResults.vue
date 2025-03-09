@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { GetApiRequestResponse } from '@/api/generated/types.gen';
+import type { GetApiRequestResponse } from '@/api/generated/types.gen';
+import type { ViewModeKey } from '@/general/constants/viewModes';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Pagination from './Pagination.vue';
@@ -15,11 +16,11 @@ const route = useRoute();
 const selectedViewMode = ref(1);
 const router = useRouter();
 const currentPage = ref(Number(route.query.page) || 1);
-function onHandleUpdateViewMode(updateViewMode) {
+function onHandleUpdateViewMode(updateViewMode: ViewModeKey) {
   selectedViewMode.value = updateViewMode;
 }
 
-function onHandleChengeCurrentPage(newCurrentPage) {
+function onHandleChengeCurrentPage(newCurrentPage: number) {
   currentPage.value = newCurrentPage;
   const currentQuery = { ...router.currentRoute.value.query };
   router.replace({ query: { ...currentQuery, page: String(newCurrentPage) } });
@@ -37,7 +38,10 @@ const helpRequestDataForPage = computed(() =>
       </p>
       <ViewSwitchPanel @updateViewMode="onHandleUpdateViewMode" />
     </v-row>
-    <ViewRequests :selectedViewMode="selectedViewMode" :helpRequestDataForPage="helpRequestDataForPage" />
+    <ViewRequests
+      :selectedViewMode="selectedViewMode as ViewModeKey"
+      :helpRequestDataForPage="helpRequestDataForPage"
+    />
     <v-row style="margin: 0; padding: 30px 0; flex-direction: row; align-items: center; justify-content: center">
       <Pagination
         :currentPage="currentPage"

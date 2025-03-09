@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ViewModeKey } from '@/general/constants/viewModes';
+import type { ViewModeKey } from '@/general/constants/viewModes';
 import { ref } from 'vue';
 const emit = defineEmits<{
   (event: 'updateViewMode', mode: ViewModeKey): void;
@@ -14,7 +14,7 @@ function onHandleSelectedСard(newSelectedСard: ViewModeKey) {
     <v-container style="margin: 0; padding: 0">
       <v-row class="rowCell">
         <v-item v-slot="{ isSelected, selectedClass, toggle }">
-          <v-card :class="['d-flex align-center cell', selectedClass]" @click="() => !isSelected && toggle()">
+          <v-card :class="['d-flex align-center cell', selectedClass]" @click="() => !isSelected && toggle?.()">
             <v-col style="margin: 0; padding: 0">
               <v-icon :icon="'mdi-grid'" class="icon"></v-icon>
             </v-col>
@@ -24,7 +24,7 @@ function onHandleSelectedСard(newSelectedСard: ViewModeKey) {
         <v-item v-slot="{ isSelected, selectedClass, toggle }">
           <v-card
             :class="['d-flex align-center cell centerCard', selectedClass]"
-            @click="() => !isSelected && toggle()"
+            @click="() => !isSelected && toggle?.()"
           >
             <v-col style="margin: 0; padding: 0">
               <v-icon :icon="'mdi-list-box-outline'" class="icon"></v-icon>
@@ -32,7 +32,7 @@ function onHandleSelectedСard(newSelectedСard: ViewModeKey) {
           </v-card>
         </v-item>
         <v-item v-slot="{ isSelected, selectedClass, toggle }">
-          <v-card :class="['d-flex align-center cell', selectedClass]" @click="() => !isSelected && toggle()">
+          <v-card :class="['d-flex align-center cell', selectedClass]" @click="() => !isSelected && toggle?.()">
             <v-col style="margin: 0; padding: 0">
               <v-icon :icon="'mdi-map-marker'" class="icon"></v-icon>
             </v-col>

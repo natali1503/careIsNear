@@ -2,14 +2,15 @@
 import { apiMessages } from '@/api/apiMessages';
 import { defineEmits, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+import { useDisplay } from 'vuetify';
 import { useAuthStore } from '../../store/auth';
 
 const authStore = useAuthStore();
-const props = defineProps({ login: String, password: String });
+const props = defineProps<{ login: string; password: string }>();
 const emit = defineEmits(['update:login', 'update:password']);
 const display = useDisplay();
-async function onHandleAuthorization(_) {
+async function onHandleAuthorization() {
   const paramsAuth = { login: props.login, password: props.password };
   try {
     await authStore.authorization(paramsAuth.login, paramsAuth.password);
@@ -28,13 +29,13 @@ const isShowPassword = ref(false);
 function handleClickShowPassword() {
   isShowPassword.value = !isShowPassword.value;
 }
-function updateLogin(event) {
+function updateLogin(event: Event) {
   const target = event.target as HTMLInputElement;
-  emit('update:login', event.target.value);
+  emit('update:login', target);
 }
-function updatePassword(event) {
+function updatePassword(event: Event) {
   const target = event.target as HTMLInputElement;
-  emit('update:password', event.target.value);
+  emit('update:password', target);
 }
 </script>
 <template>

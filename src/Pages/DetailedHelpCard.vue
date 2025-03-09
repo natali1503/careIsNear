@@ -10,7 +10,8 @@ import { useAuthStore } from '@/store/auth';
 import { useDetailedHelpRequests } from '@/store/detailedHelpRequests';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { useToast } from 'vue-toastification';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+import { useDisplay } from 'vuetify';
 import PageTemplate from '../components/PageTemplate.vue';
 
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
@@ -31,7 +32,6 @@ onBeforeMount(async () => {
     } else toast.error('Что-то еще');
   }
 });
-const isLoading = computed(() => detailedHelpRequests.isLoading);
 const isError = computed(() => detailedHelpRequests.isError || favouritesRequestsHelp.isError);
 const isData = computed(() => detailedHelpRequests.isData && favouritesRequestsHelp.isData);
 const data = computed(() => detailedHelpRequests.data || {});
@@ -54,7 +54,7 @@ console.log(display.sm);
   <PageTemplate title="Запрос о помощи">
     <NoDataError v-if="isError" text="Ошибка! Не удалось загрузить информацию" />
     <v-col class="card detailedHelp" cols="12" md="7" v-if="isData" :style="{ order: display.mobile.value ? 1 : 0 }">
-      <DetailedHelp :dataDetailedHelp="data" :isFavourites="isFavourites" />
+      <DetailedHelp :dataDetailedHelp="data" :isFavourites="isFavourites ?? false" />
     </v-col>
     <v-col class="card donationCard" cols="12" md="4" v-if="isData" :style="{ order: display.mobile.value ? 0 : 1 }">
       <DonationCard :donationData="donationData" />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { DefineComponent } from 'vue';
+import type { DefineComponent } from 'vue';
 
-const props = defineProps<{ name: String; link: String; logo: DefineComponent<{}, {}, any> }>();
+defineProps<{ name: String; link: String; logo: DefineComponent<{}, {}, any> }>();
 </script>
 <template>
   <div style="display: flex; flex-direction: row; gap: 32px">

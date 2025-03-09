@@ -2,7 +2,15 @@
 import { dateFormatting } from '@/general/dateFormatting';
 import DonationStatusCard from './element/DonationStatusCard.vue';
 
-const props = defineProps<{ donationData }>();
+interface IDonationData {
+  goalDescription: string | undefined;
+  endingDate: string | undefined;
+  contributorsCount: number | undefined;
+  requestGoalCurrentValue: number | undefined;
+  requestGoal: number | undefined;
+}
+
+defineProps<{ donationData: IDonationData }>();
 </script>
 <template>
   <v-row style="margin: 0; padding: 0; padding: 0 20px"> <h6 class="mainTitle">Вместе для добрых дел</h6></v-row>
@@ -11,19 +19,21 @@ const props = defineProps<{ donationData }>();
       <div style="display: flex; flex-direction: column; gap: 20px">
         <div class="blockDetailed">
           <span class="title">Цель сбора</span>
-          <span class="description">{{ props.donationData.goalDescription }}</span>
+          <span class="description">{{ donationData.goalDescription }}</span>
         </div>
         <div class="blockDetailed" style="padding-bottom: 10px">
           <span class="title">Завершение</span>
-          <span class="description">{{ dateFormatting(props.donationData.endingDate) }}</span>
+          <span class="description">{{
+            donationData.endingDate ? dateFormatting(donationData.endingDate) : 'Дата не указана'
+          }}</span>
         </div>
       </div>
     </v-col>
     <v-col cols="7" md="12" style="margin: 0; padding: 0">
       <DonationStatusCard
-        :requestGoalCurrentValue="props.donationData.requestGoalCurrentValue"
-        :requestGoal="props.donationData.requestGoal"
-        :contributorsCount="props.donationData.contributorsCount"
+        :requestGoalCurrentValue="donationData.requestGoalCurrentValue ?? 0"
+        :requestGoal="donationData.requestGoal ?? 0"
+        :contributorsCount="donationData.contributorsCount ?? 0"
       /> </v-col
   ></v-row>
 </template>

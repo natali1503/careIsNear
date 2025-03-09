@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useDisplay } from 'vuetify';
 import Content from './Content.vue';
 import Footer from './Footer.vue';
 import Header from './Header/Header.vue';

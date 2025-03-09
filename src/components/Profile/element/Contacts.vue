@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { DefineComponent } from 'vue';
-import { GetApiUserResponse } from '../../../api/generated';
+import type { GetApiUserResponse } from '../../../api/generated';
 import ItemSocial from './ItemSocial.vue';
 import Row from './Row.vue';
 import Section from './Section.vue';
@@ -9,7 +8,7 @@ import Vkontakte from './Vkontakte.vue';
 import Whatsapp from './Whatsapp.vue';
 
 type contacts = Pick<GetApiUserResponse, 'contacts'>;
-const props = defineProps<contacts>();
+defineProps<contacts>();
 </script>
 
 <template>
@@ -23,9 +22,9 @@ const props = defineProps<contacts>();
     </Section>
 
     <Section sectionTitle="Социальные сети">
-      <ItemSocial name="Vkontakte" :link="`https://vk.com/${contacts.social.vk}`" :logo="Vkontakte" />
-      <ItemSocial name="Telegram" :link="`https://t.me/${contacts.social.telegram}`" :logo="Telegram" />
-      <ItemSocial name="Whatsapp" :link="`https://wa.me/${contacts.social.whatsapp}`" :logo="Whatsapp" />
+      <ItemSocial name="Vkontakte" :link="`https://vk.com/${contacts?.social?.vk ?? ''}`" :logo="Vkontakte" />
+      <ItemSocial name="Telegram" :link="`https://t.me/${contacts?.social?.telegram ?? ''}`" :logo="Telegram" />
+      <ItemSocial name="Whatsapp" :link="`https://wa.me/${contacts?.social?.whatsapp ?? ''}`" :logo="Whatsapp" />
     </Section>
   </div>
 </template>

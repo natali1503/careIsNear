@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import NotFoundResult from '../../public/img/notFoundResult.svg';
-const props = defineProps<{ text: string }>();
+defineProps<{ text: string }>();
 </script>
 <template>
   <v-col>

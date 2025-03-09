@@ -2,7 +2,7 @@
 import { useAuthStore } from '../../store/auth';
 import UserImg from './element/UserImg.vue';
 
-const props = defineProps({ name: String, lastname: String, status: String });
+defineProps({ name: String, lastname: String, status: String });
 const authStore = useAuthStore();
 function onHandleLogout() {
   authStore.logout();

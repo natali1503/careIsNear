@@ -1,35 +1,36 @@
 <script setup lang="ts">
-import { HelpRequestData } from '@/api/generated';
+import type { HelpRequestData } from '@/api/generated';
 
 import FavoriteButton from '@/components/FavoriteButton.vue';
 import { dateFormatting } from '@/general/dateFormatting';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+import { useDisplay } from 'vuetify';
 import DataCell from '../../DataCell.vue';
 import ActionsSchedule from './element/ActionsSchedule.vue';
 import VerifiedOrganization from './element/VerifiedOrganization.vue';
 
-const props = defineProps<{ dataDetailedHelp: HelpRequestData; isFavourites: boolean }>();
+defineProps<{ dataDetailedHelp: HelpRequestData; isFavourites: boolean }>();
 const display = useDisplay();
 </script>
 <template>
   <div class="detailedHelp">
     <div style="display: flex; flex-direction: row; padding-right: 15px; justify-content: space-between">
-      <h5 class="title">{{ dataDetailedHelp.title.split(' ').slice(1).join(' ') }}</h5>
+      <h5 class="title">{{ dataDetailedHelp.title?.split(' ').slice(1).join(' ') }}</h5>
       <FavoriteButton
         :empty="true"
         type="withText"
         operation="add"
-        :id="dataDetailedHelp.id"
+        :id="dataDetailedHelp.id ?? ''"
         :isFavourites="isFavourites"
       />
     </div>
     <div class="detailedHelpData">
       <div class="organization">
-        <DataCell title="Организация" :data="[{ description: dataDetailedHelp.organization.title }]" type="column" />
-        <VerifiedOrganization :isVerified="dataDetailedHelp.organization.isVerified" />
+        <DataCell title="Организация" :data="[{ description: dataDetailedHelp.organization?.title }]" type="column" />
+        <VerifiedOrganization :isVerified="dataDetailedHelp.organization?.isVerified ?? false" />
       </div>
       <DataCell title="Кому мы помогаем" :data="[{ description: dataDetailedHelp.description }]" type="column" />
-      <ActionsSchedule :actionsSchedule="dataDetailedHelp.actionsSchedule" />
+      <ActionsSchedule :actionsSchedule="dataDetailedHelp.actionsSchedule ?? []" />
       <DataCell title="Цель сбора" :data="[{ description: dataDetailedHelp.goalDescription }]" type="column" />
       <DataCell
         title="Завершение"
@@ -39,17 +40,17 @@ const display = useDisplay();
       <DataCell
         title="Локация"
         :data="[
-          { subtitle: 'Область: ', description: dataDetailedHelp.location.district },
-          { subtitle: 'Насленный пункт: ', description: dataDetailedHelp.location.city },
+          { subtitle: 'Область: ', description: dataDetailedHelp.location?.district },
+          { subtitle: 'Насленный пункт: ', description: dataDetailedHelp.location?.city },
         ]"
         type="column"
       />
       <DataCell
         title="Контакты"
         :data="[
-          { subtitle: 'Телефон: ', description: dataDetailedHelp.contacts.phone },
-          { subtitle: 'E-mail: ', description: dataDetailedHelp.contacts.email },
-          { subtitle: 'Сайт: ', description: dataDetailedHelp.contacts.website },
+          { subtitle: 'Телефон: ', description: dataDetailedHelp.contacts?.phone },
+          { subtitle: 'E-mail: ', description: dataDetailedHelp.contacts?.email },
+          { subtitle: 'Сайт: ', description: dataDetailedHelp.contacts?.website },
         ]"
         :type="display.mdAndDown.value ? 'column' : 'row'"
       />

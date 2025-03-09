@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import PageTemplate from '@/components/PageTemplate.vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 
 import { apiMessages } from '@/api/apiMessages';
+
 import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
 import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
+import PageTemplate from '@/components/PageTemplate.vue';
 
 import { TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
 import { FilterValue } from '@/general/filter/SelectedFilters';

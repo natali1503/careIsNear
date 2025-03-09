@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ isVerified: boolean }>();
+defineProps<{ isVerified: boolean }>();
 </script>
 <template>
   <div style="display: flex; flex-direction: row; align-items: center; gap: 4px">

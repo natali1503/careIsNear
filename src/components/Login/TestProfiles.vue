@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+import { useDisplay } from 'vuetify';
 import { dataAuthUser } from '../../api/dataAuthUser';
 import UserIteam from './UserIteam.vue';
 const emit = defineEmits(['dataAuth']);

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import NoDataError from '../../public/img/noDataError.svg';
-const props = defineProps<{ text: string }>();
+defineProps<{ text: string }>();
 </script>
 <template>
   <v-col

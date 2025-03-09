@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import TestProfilesMobile from '@/components/Login/TestProfilesMobile.vue';
 import { onBeforeMount, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+import TestProfilesMobile from '@/components/Login/TestProfilesMobile.vue';
+import { useDisplay } from 'vuetify';
 import LoginForm from '../components/Login/LoginForm.vue';
 import TestProfiles from '../components/Login/TestProfiles.vue';
 import { routesName } from '../router';
@@ -16,7 +17,7 @@ const router = useRouter();
 onBeforeMount(() => {});
 watch(
   () => authStore.isAuth,
-  (isAuth, oldValue) => {
+  (isAuth) => {
     if (isAuth) {
       router.push({ name: routesName.helpRequests, query: { page: 1 } });
     }

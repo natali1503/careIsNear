@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 
 import { api } from '../api/api';
-import { GetApiUserResponse } from '../api/generated';
+import type { GetApiUserResponse } from '../api/generated';
 import { keyForLocalStorage } from '../general/constants/keyForLocalStorage';
 import { getLocalStorage } from '../general/localStorage/getLocalStorage';
 

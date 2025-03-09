@@ -1,14 +1,15 @@
 {
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": ["esnext", "dom"],
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "types": ["vite/client", "jest", "vuetify", "vitest"]
-  },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "eslint.config.js"]
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
+  // "compilerOptions": {
+  //   "esModuleInterop": true,
+  //   "allowSyntheticDefaultImports": true,
+  //   "lib": ["esnext", "dom"],
+  //   "baseUrl": ".",
+  //   "paths": {
+  //     "@/*": ["src/*"]
+  //   },
+  //   "types": ["vite/client", "jest", "vuetify", "vitest"]
+  // },
+  // "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "eslint.config.js"]
 }

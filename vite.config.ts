@@ -1,9 +1,9 @@
 import path from 'path';
 
 import vue from '@vitejs/plugin-vue';
+import { defineConfig } from 'vite';
 import vuetify from 'vite-plugin-vuetify';
 import svgLoader from 'vite-svg-loader';
-import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -25,15 +25,14 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'), // Указываем путь к вашей папке "src"
     },
   },
-
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: '/tests/setupTests.ts',
-    server: {
-      deps: {
-        inline: ['vuetify'],
-      },
-    },
-  },
+  // test: {
+  //   globals: true,
+  //   environment: 'jsdom',
+  //   setupFiles: '/tests/setupTests.ts',
+  //   server: {
+  //     deps: {
+  //       inline: ['vuetify'],
+  //     },
+  //   },
+  // },
 });

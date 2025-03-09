@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { VIEW_MODES } from '@/general/constants/viewModes';
+import type { HelpRequestData } from '@/api/generated';
+import { VIEW_MODES, type ViewModeKey } from '@/general/constants/viewModes';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { useHelpRequests } from '@/store/helpRequests';
 import { computed } from 'vue';
@@ -11,8 +12,8 @@ import ListItem from './HelpCard/ListItem.vue';
 import MapHelpRequests from './HelpCard/MapHelpRequests.vue';
 
 const props = defineProps<{
-  selectedViewMode;
-  helpRequestDataForPage;
+  selectedViewMode: ViewModeKey;
+  helpRequestDataForPage: HelpRequestData[];
 }>();
 const helpRequests = useHelpRequests();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
@@ -32,7 +33,7 @@ const totalRequests = computed(() => (helpRequests.isData ? props.helpRequestDat
         v-for="helpRequestDataIteam in helpRequestDataForPage"
         v-if="VIEW_MODES[selectedViewMode] === VIEW_MODES[1]"
         :helpRequestDataIteam="helpRequestDataIteam"
-        :isFavourites="favouritesRequestsHelp.favouritesId.includes(helpRequestDataIteam.id)"
+        :isFavourites="favouritesRequestsHelp.favouritesId.includes(helpRequestDataIteam.id ?? '')"
       />
 
       <MapHelpRequests v-if="VIEW_MODES[selectedViewMode] === VIEW_MODES[2]" />

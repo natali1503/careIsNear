@@ -2,13 +2,14 @@
 import { apiMessages } from '@/api/apiMessages';
 import Pagination from '@/components/HelpRequests/Pagination.vue';
 import ViewRequests from '@/components/HelpRequests/ViewRequests.vue';
+import type { ViewModeKey } from '@/general/constants/viewModes';
 import { useAuthStore } from '@/store/auth';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
 import { useHelpRequests } from '@/store/helpRequests';
 import { computed, onBeforeMount, ref } from 'vue';
 import { useToast } from 'vue-toastification';
 
-const props = defineProps<{ selectedViewMode: number }>();
+defineProps<{ selectedViewMode: ViewModeKey }>();
 const favouritesRequestsHelp = useFavouritesRequestsHelp();
 const helpRequests = useHelpRequests();
 
@@ -33,7 +34,7 @@ const helpRequestData = computed(() => {
     return helpRequests.data.filter((request) => request.id === id)[0];
   });
 });
-function onHandleChengeCurrentPage(newCurrentPage) {
+function onHandleChengeCurrentPage(newCurrentPage: number) {
   currentPage.value = newCurrentPage;
 }
 const helpRequestDataForPage = computed(() =>

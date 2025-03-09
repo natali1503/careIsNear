@@ -1,17 +1,18 @@
 <script setup lang="ts">
+import type { ViewModeKey } from '@/general/constants/viewModes';
 import { ref } from 'vue';
-import { GetApiUserResponse } from '../../api/generated';
+import type { GetApiUserResponse } from '../../api/generated';
 import ViewSwitchPanel from '../HelpRequests/ViewSwitchPanel.vue';
 import Contacts from './element/Contacts.vue';
 import Favorites from './element/Favorites.vue';
 import PersonalData from './element/PersonalData.vue';
 const tab = ref(0);
-const props = defineProps<{
+defineProps<{
   dataUser: GetApiUserResponse;
 }>();
 const selectedViewMode = ref(1);
 
-function onHandleUpdateViewMode(updateViewMode) {
+function onHandleUpdateViewMode(updateViewMode: ViewModeKey) {
   selectedViewMode.value = updateViewMode;
 }
 </script>
@@ -37,7 +38,7 @@ function onHandleUpdateViewMode(updateViewMode) {
         </v-tabs-window-item>
 
         <v-tabs-window-item>
-          <v-card-text><Favorites :selectedViewMode="selectedViewMode" /></v-card-text>
+          <v-card-text><Favorites :selectedViewMode="selectedViewMode as ViewModeKey" /></v-card-text>
         </v-tabs-window-item>
       </v-tabs-window>
     </v-card>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Row from './Row.vue';
-const props = defineProps({ city: String, district: String });
+defineProps<{ city: string; district: string }>();
 </script>
 <template>
   <div>

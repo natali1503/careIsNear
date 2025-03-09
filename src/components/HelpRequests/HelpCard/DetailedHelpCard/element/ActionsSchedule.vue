@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ actionsSchedule: { stepLabel?: string; isDone?: boolean }[] }>();
+defineProps<{ actionsSchedule: { stepLabel?: string; isDone?: boolean }[] }>();
 </script>
 <template>
   <div class="actionsSchedule">

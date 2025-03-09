@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { IDataAuthUser } from '@/api/dataAuthUser';
+import type { IDataAuthUser } from '@/api/dataAuthUser';
 import { defineProps } from 'vue';
-const props = defineProps<{ dataAuth: IDataAuthUser }>();
+defineProps<{ dataAuth: IDataAuthUser }>();
 </script>
 <template>
   <v-container class="userIteam">
