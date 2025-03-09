@@ -56,7 +56,6 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
             </div>
             <v-btn class="btn" @click="emit('resetFilter')" :disabled="!isFilter">Сбросить</v-btn>
           </div>
-          x
         </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
