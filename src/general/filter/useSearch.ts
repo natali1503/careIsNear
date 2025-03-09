@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { HelpRequestData } from '../../api/generated';
+import { type HelpRequestData } from '../../api/generated';
 
 export function useSearch(initValueSearch: string) {
   const router = useRouter();

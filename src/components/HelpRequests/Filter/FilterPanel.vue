@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
-import { TypeHelperRequirements } from '@/general/filter/HelperRequirements';
+import type { TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
+import type { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
+import type { TypeHelperRequirements } from '@/general/filter/HelperRequirements';
 import { filterOptions } from '@/general/filterOptions';
 import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
 import DateFilter from './DateFilter.vue';
 
-const props = defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
+defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
 const emit = defineEmits(['updateFilter', 'resetFilter']);
 </script>
 <template>
@@ -28,10 +29,11 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
                   :title="filterOption.title ?? ''"
                   :titleId="filterOption.id ?? ''"
                   :options="filterOption.options ?? []"
-                  :filterPanelStatus="filterPanelStatus[filterOption.id]"
+                  :filterPanelStatus="filterPanelStatus[filterOption.id as TypeKeyFilterOptions]"
                   @checkbox="
                     (value: string) => {
-                      emit('updateFilter', { [filterOption.id]: value });
+                      const typedId = filterOption.id as TypeKeyFilterOptions;
+                      emit('updateFilter', { [typedId]: value });
                     }
                   "
                 />

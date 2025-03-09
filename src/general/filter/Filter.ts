@@ -1,12 +1,12 @@
-import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
-import { TypeFlatFilter } from './FlatFilter';
+import { FilterOptions, type TypeKeyFilterOptions } from './FilterOptions';
+import type { TypeFlatFilter } from './FlatFilter';
 import {
   HelperRequirements,
-  TypeHelperRequirements,
-  TypeHelperRequirementsArr,
-  TypeKeyHelperRequirements,
+  type TypeHelperRequirements,
+  type TypeHelperRequirementsArr,
+  type TypeKeyHelperRequirements,
 } from './HelperRequirements';
-import { FilterValue, TypeSelectedFilters } from './SelectedFilters';
+import type { FilterValue, TypeSelectedFilters } from './SelectedFilters';
 
 export class SelectedFilters {
   private filter: TypeSelectedFilters;

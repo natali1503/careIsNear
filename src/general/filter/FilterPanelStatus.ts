@@ -1,9 +1,17 @@
 import cloneDeep from 'lodash.clonedeep';
 
 import { SelectedFilters } from './Filter';
-import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
-import { FilterPanelStatusNoChoice, TypeFilterPanelStatus, TypeHelperRequirements } from './FilterOptionsInit';
-import { HelperRequirements, TypeHelperRequirementsArr, TypeKeyHelperRequirements } from './HelperRequirements';
+import { FilterOptions, type TypeKeyFilterOptions } from './FilterOptions';
+import {
+  FilterPanelStatusNoChoice,
+  type TypeFilterPanelStatus,
+  type TypeHelperRequirementsPanelStatus,
+} from './FilterOptionsInit';
+import {
+  HelperRequirements,
+  type TypeHelperRequirementsArr,
+  type TypeKeyHelperRequirements,
+} from './HelperRequirements';
 
 export class FilterPanelStatus {
   filterPanelStatus: TypeFilterPanelStatus;
@@ -50,7 +58,7 @@ export class FilterPanelStatus {
   private updateHelperRequirements(helperRequirements: TypeHelperRequirementsArr) {
     for (const [keyNested, valueNested] of Object.entries(this.filterPanelStatus.helperRequirements) as [
       TypeKeyHelperRequirements,
-      TypeHelperRequirements[keyof TypeHelperRequirements],
+      TypeHelperRequirementsPanelStatus[keyof TypeHelperRequirementsPanelStatus],
     ][]) {
       if (keyNested === HelperRequirements.isOnline) {
         if (helperRequirements[keyNested]) {
@@ -65,7 +73,6 @@ export class FilterPanelStatus {
         }
       } else {
         Object.keys(valueNested).forEach((key) => {
-          const test = this.filterPanelStatus.helperRequirements[keyNested][key];
           this.filterPanelStatus.helperRequirements[keyNested][key] =
             helperRequirements[keyNested]?.includes(key) ?? false;
         });

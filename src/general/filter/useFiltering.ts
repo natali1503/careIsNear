@@ -1,16 +1,16 @@
 import clonedeep from 'lodash.clonedeep';
 import { nextTick, ref, watch } from 'vue';
-import { LocationQueryRaw, LocationQueryValueRaw, useRouter } from 'vue-router';
+import { type LocationQueryRaw, type LocationQueryValueRaw, useRouter } from 'vue-router';
 
-import { HelpRequestData } from '../../api/generated';
+import { type HelpRequestData } from '../../api/generated';
 
 import { SelectedFilters, selectedFiltersInit } from './Filter';
-import { TypeKeyFilterOptions } from './FilterOptions';
-import { FilterPanelStatusNoChoice, TypeFilterPanelStatus } from './FilterOptionsInit';
+import { type TypeKeyFilterOptions } from './FilterOptions';
+import { FilterPanelStatusNoChoice, type TypeFilterPanelStatus } from './FilterOptionsInit';
 import { filterPanelStatus as filterPanelStatusInitValue } from './FilterPanelStatus';
-import { FlatFilter, TypeFlatFilter } from './FlatFilter';
-import { TypeHelperRequirements, TypeKeyHelperRequirements } from './HelperRequirements';
-import { TypeSelectedFilters } from './SelectedFilters';
+import { FlatFilter, type TypeFlatFilter } from './FlatFilter';
+import { type TypeHelperRequirements, type TypeKeyHelperRequirements } from './HelperRequirements';
+import { type TypeSelectedFilters } from './SelectedFilters';
 export function useFiltering() {
   const router = useRouter();
 

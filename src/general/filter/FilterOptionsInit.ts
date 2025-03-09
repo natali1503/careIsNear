@@ -1,4 +1,4 @@
-import { FilterOptions, TypeKeyFilterOptions } from './FilterOptions';
+import { FilterOptions, type TypeKeyFilterOptions } from './FilterOptions';
 import { HelperRequirements } from './HelperRequirements';
 
 export type TypeFilterOptionsInitItem =
@@ -16,7 +16,7 @@ export type TypeFilterOptionsInit = {
   [key in TypeKeyFilterOptions]: TypeFilterOptionsInitItem;
 };
 
-export type TypeHelperRequirements = {
+export type TypeHelperRequirementsPanelStatus = {
   [HelperRequirements.qualification]: { [key in string]: boolean };
   [HelperRequirements.helperType]: { [key in string]: boolean };
   [HelperRequirements.isOnline]: { [key in string]: boolean };
@@ -26,7 +26,7 @@ export type TypeFilterPanelStatus = {
   // [FilterOptions.requesterType]: { person: boolean; organization: boolean };
   [FilterOptions.helpType]: { [key in string]: boolean };
   [FilterOptions.requesterType]: { [key in string]: boolean };
-  [FilterOptions.helperRequirements]: TypeHelperRequirements;
+  [FilterOptions.helperRequirements]: TypeHelperRequirementsPanelStatus;
   // [HelperRequirements.qualification]: { professional: boolean; common: boolean };
   // [HelperRequirements.helperType]: { group: boolean; single: boolean };
   // [HelperRequirements.isOnline]: { online: boolean; offline: boolean };

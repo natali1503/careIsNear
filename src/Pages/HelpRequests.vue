@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount } from 'vue';
 
 import { apiMessages } from '@/api/apiMessages';
 
@@ -8,16 +8,17 @@ import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
 import PageTemplate from '@/components/PageTemplate.vue';
 
-import { TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
-import { FilterValue } from '@/general/filter/SelectedFilters';
+import { type TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
+import { type FilterValue } from '@/general/filter/SelectedFilters';
 import { useFiltering } from '@/general/filter/useFiltering';
 import { useSearch } from '@/general/filter/useSearch';
 import { useAuthStore } from '@/store/auth';
 import { useFavouritesRequestsHelp } from '@/store/favouritesRequestsHelp';
-import { computed, onBeforeMount } from 'vue';
+
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import { useDisplay } from 'vuetify/lib/framework.mjs';
+
+import { useDisplay } from 'vuetify';
 import { useHelpRequests } from '../store/helpRequests';
 
 const helpRequests = useHelpRequests();
@@ -83,7 +84,7 @@ const isFilter = computed(() => selectedFilters.value && Object.keys(selectedFil
     </v-col>
     <v-col style="margin: 0; padding: 0">
       <v-row style="margin: 0; padding: 0; margin-bottom: 30px">
-        <SearchBar v-model="searchQuery as string" @resetSearchQuery="resetSearchQuery" />
+        <SearchBar v-model="searchQuery" @resetSearchQuery="resetSearchQuery" />
       </v-row>
       <v-row style="margin: 0; padding: 0">
         <SearchFilterResults

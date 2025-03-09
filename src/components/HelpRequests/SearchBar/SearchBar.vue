@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
-const props = defineProps<{ modelValue: string }>();
+defineProps<{ modelValue: string }>();
 const emit = defineEmits(['update:modelValue', 'resetSearchQuery']);
 
 function handleInputChange(event: Event) {

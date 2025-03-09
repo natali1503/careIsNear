@@ -1,19 +1,13 @@
 <script setup lang="ts">
-import { TypeFilterOptionsInitItem } from '@/general/filter/FilterOptionsInit';
-import { IFilterOptions } from '@/general/filterOptions';
-import { selectedFilters } from '@/general/selectedFilters';
-import { watch } from 'vue';
+import type { TypeFilterOptionsInitItem } from '@/general/filter/FilterOptionsInit';
 
-const prop = defineProps<{
+defineProps<{
   title: string;
   titleId: string;
   options: { label: string; id: string }[];
   filterPanelStatus: TypeFilterOptionsInitItem;
 }>();
 const emit = defineEmits(['checkbox']);
-function onChange() {
-  // option.id;
-}
 </script>
 <template>
   <div>
@@ -21,8 +15,8 @@ function onChange() {
     <div style="display: flex; flex-direction: column">
       <v-checkbox
         v-for="option in options"
-        :label="option.label"
-        v-model="filterPanelStatus[option.id]"
+        :label="option?.label"
+        v-model="((filterPanelStatus as Record<string, boolean>) ?? {})[option?.id as string]"
         @change="
           () => {
             emit('checkbox', option.id);

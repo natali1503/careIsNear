@@ -1,6 +1,6 @@
 import { FilterOptions } from './FilterOptions';
-import { TypeHelperRequirementsArr } from './HelperRequirements';
-import { TypeSelectedFilters } from './SelectedFilters';
+import type { TypeHelperRequirementsArr } from './HelperRequirements';
+import type { TypeSelectedFilters } from './SelectedFilters';
 
 export enum FlatFilter {
   helpType = 'helpType',

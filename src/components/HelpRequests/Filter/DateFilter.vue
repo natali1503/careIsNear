@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{ selectedDate: Date | null }>();
+defineProps<{ selectedDate: Date | null }>();
 const emit = defineEmits(['update:selectedDate', 'updateDateFilter']);
 
 function updateDateFilter(newSelectedDate: Date | null) {

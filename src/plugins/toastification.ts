@@ -1,4 +1,4 @@
-import { PluginOptions, POSITION } from 'vue-toastification';
+import { type PluginOptions, POSITION } from 'vue-toastification';
 
 export const optionsToastification: PluginOptions = {
   position: POSITION.BOTTOM_RIGHT,

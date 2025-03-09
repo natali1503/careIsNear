@@ -1,5 +1,5 @@
 import { FilterOptions } from './FilterOptions';
-import { TypeHelperRequirements, TypeHelperRequirementsArr } from './HelperRequirements';
+import type { TypeHelperRequirements, TypeHelperRequirementsArr } from './HelperRequirements';
 
 export type TypeSelectedFilters = {
   [FilterOptions.helpType]?: string[];
