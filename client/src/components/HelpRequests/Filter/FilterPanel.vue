@@ -3,12 +3,23 @@ import type { TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
 import type { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
 import type { TypeHelperRequirements } from '@/general/filter/HelperRequirements';
 import { filterOptions } from '@/general/filterOptions';
+import { ref } from 'vue';
 import Accordion from './Accordion.vue';
 import CheckListItem from './CheckListItem.vue';
 import DateFilter from './DateFilter.vue';
 
 defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
 const emit = defineEmits(['updateFilter', 'resetFilter']);
+const StatusFilter = { open: 'open', close: 'close' };
+const statusFilter = ref(StatusFilter.close);
+function handleResetFilter() {
+  emit('resetFilter');
+}
+function handleChangeStatusFilter() {
+  const currentValue = statusFilter.value;
+  const newValue = currentValue === StatusFilter.open ? StatusFilter.close : StatusFilter.open;
+  statusFilter.value = newValue;
+}
 </script>
 <template>
   <div class="filterPanel">
@@ -16,9 +27,16 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
       <v-expansion-panel>
         <v-expansion-panel-title class="title">
           Фильтрация
-          <!-- <template v-slot:actions> -->
-          <!-- <v-icon v-if="isFilter" icon="mdi-filter-remove-outline" style="color: rgba(0, 0, 0, 0.6)"> </v-icon> -->
-          <!-- </template> -->
+          <v-expansion-panel-title-actions class="panelBtn">
+            <v-icon
+              density="default"
+              :disabled="!isFilter"
+              @click.stop="handleResetFilter()"
+              icon="mdi mdi-filter-variant-remove"
+              size="small"
+              class="iconBtn"
+            />
+          </v-expansion-panel-title-actions>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
           <div style="display: flex; flex-direction: column; gap: 40px">
@@ -84,5 +102,12 @@ const emit = defineEmits(['updateFilter', 'resetFilter']);
 .btn {
   border: 1px solid rgba(0, 0, 0, 0.87);
   box-shadow: none;
+}
+.panelBtn {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  width: 100%;
+  justify-content: flex-end;
 }
 </style>

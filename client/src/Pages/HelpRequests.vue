@@ -4,6 +4,7 @@ import { computed, onBeforeMount } from 'vue';
 import { apiMessages } from '@/api/apiMessages';
 
 import FilterPanel from '@/components/HelpRequests/Filter/FilterPanel.vue';
+import FilterPanel2 from '@/components/HelpRequests/Filter/FilterPanel2.vue';
 import SearchBar from '@/components/HelpRequests/SearchBar/SearchBar.vue';
 import SearchFilterResults from '@/components/HelpRequests/SearchFilterResults.vue';
 import PageTemplate from '@/components/PageTemplate.vue';
@@ -74,7 +75,7 @@ const isFilter = computed(() => selectedFilters.value && Object.keys(selectedFil
       style="margin: 0; padding: 0; height: max-content"
       :style="{ paddingRight: display.mobile.value ? 0 : '20px' }"
     >
-      <FilterPanel
+      <FilterPanel2
         :filterPanelStatus="filterPanelStatus"
         :isFilter="isFilter"
         :mobile="display.mobile.value"
