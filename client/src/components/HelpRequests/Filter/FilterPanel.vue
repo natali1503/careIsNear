@@ -1,82 +1,45 @@
 <script setup lang="ts">
-import type { TypeKeyFilterOptions } from '@/general/filter/FilterOptions';
-import type { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
-import type { TypeHelperRequirements } from '@/general/filter/HelperRequirements';
-import { filterOptions } from '@/general/filterOptions';
-import { ref } from 'vue';
-import Accordion from './Accordion.vue';
-import CheckListItem from './CheckListItem.vue';
-import DateFilter from './DateFilter.vue';
+import { ref, watch } from 'vue';
 
-defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
+import type { TypeFilterOptionsInit } from '@/general/filter/FilterOptionsInit';
+import BodyFilter from './BodyFilter.vue';
+import TitleFilter from './TitleFilter.vue';
+
+const props = defineProps<{ filterPanelStatus: TypeFilterOptionsInit; isFilter: boolean; mobile: boolean }>();
 const emit = defineEmits(['updateFilter', 'resetFilter']);
+
 const StatusFilter = { open: 'open', close: 'close' };
-const statusFilter = ref(StatusFilter.close);
-function handleResetFilter() {
-  emit('resetFilter');
-}
+const statusFilter = ref(props.mobile ? StatusFilter.close : StatusFilter.open);
+
 function handleChangeStatusFilter() {
   const currentValue = statusFilter.value;
   const newValue = currentValue === StatusFilter.open ? StatusFilter.close : StatusFilter.open;
   statusFilter.value = newValue;
 }
+
+watch(
+  () => props.mobile,
+  () => {
+    statusFilter.value = props.mobile ? StatusFilter.close : StatusFilter.open;
+  },
+);
 </script>
 <template>
   <div class="filterPanel">
-    <v-expansion-panels style="width: 100%; padding: 0" :model-value="mobile ? null : 0">
-      <v-expansion-panel>
-        <v-expansion-panel-title class="title">
-          Фильтрация
-          <v-expansion-panel-title-actions class="panelBtn">
-            <v-icon
-              density="default"
-              :disabled="!isFilter"
-              @click.stop="handleResetFilter()"
-              icon="mdi mdi-filter-variant-remove"
-              size="small"
-              class="iconBtn"
-            />
-          </v-expansion-panel-title-actions>
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
-          <div style="display: flex; flex-direction: column; gap: 40px">
-            <div style="display: flex; flex-direction: column; gap: 20px">
-              <div v-for="filterOption in filterOptions" class="filter">
-                <CheckListItem
-                  v-if="filterOption.type === 'checkList'"
-                  :title="filterOption.title ?? ''"
-                  :titleId="filterOption.id ?? ''"
-                  :options="filterOption.options ?? []"
-                  :filterPanelStatus="filterPanelStatus[filterOption.id as TypeKeyFilterOptions]"
-                  @checkbox="
-                    (value: string) => {
-                      const typedId = filterOption.id as TypeKeyFilterOptions;
-                      emit('updateFilter', { [typedId]: value });
-                    }
-                  "
-                />
-                <Accordion
-                  v-if="filterOption.type === 'accordionList'"
-                  :accordionTitle="filterOption.accordion?.accordionTitle ?? ''"
-                  :items="filterOption.accordion?.items ?? []"
-                  :filterPanelStatus="filterPanelStatus"
-                  @checkboxAccordion="
-                    (value: TypeHelperRequirements) => {
-                      emit('updateFilter', value);
-                    }
-                  "
-                />
-              </div>
-              <DateFilter
-                v-model:selectedDate="filterPanelStatus.endingDate as Date"
-                @updateDateFilter="(value) => emit('updateFilter', value)"
-              />
-            </div>
-            <v-btn class="btn" @click="emit('resetFilter')" :disabled="!isFilter">Сбросить</v-btn>
-          </div>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+    <TitleFilter
+      :statusFilter="statusFilter"
+      :isFilter="isFilter"
+      :mobile="mobile"
+      @changeStatusFilter="handleChangeStatusFilter"
+      @resetFilter="() => emit('resetFilter')"
+    />
+    <BodyFilter
+      :isFilter="isFilter"
+      :filterPanelStatus="filterPanelStatus"
+      @updateFilter="(value) => emit('updateFilter', value)"
+      @resetFilter="() => emit('resetFilter')"
+      v-if="statusFilter === StatusFilter.open"
+    />
   </div>
 </template>
 <style scoped>
@@ -91,23 +54,30 @@ function handleChangeStatusFilter() {
   width: 100%;
   height: max-content;
 }
+.headerFilter {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
 .title {
   font-weight: 500;
   font-size: 20px;
   line-height: 32px;
+  flex: 1;
 }
-::v-deep(.v-expansion-panel__shadow) {
+
+.iconBtn {
   box-shadow: none;
 }
-.btn {
-  border: 1px solid rgba(0, 0, 0, 0.87);
-  box-shadow: none;
+.iconBtn ::v-deep(.v-btn__overlay) {
+  background-color: transparent;
 }
-.panelBtn {
-  display: flex;
-  flex-direction: row;
-  gap: 2px;
+.iconBtn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.btnFilter {
   width: 100%;
-  justify-content: flex-end;
+  box-shadow: none;
+  justify-content: space-between;
 }
 </style>
